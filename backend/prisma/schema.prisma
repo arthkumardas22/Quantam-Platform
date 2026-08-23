@@ -1,0 +1,260 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum Difficulty {
+  Beginner
+  Intermediate
+  Advanced
+}
+
+// ─── USERS ────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(STUDENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  progress            UserProgress[]
+  circuits            QuantumCircuit[]
+  circuitExecutions   CircuitExecution[]
+  challengeSubmissions ChallengeSubmission[]
+  chatSessions        AIConversation[]
+
+  @@index([email])
+}
+
+// ─── LEARNING TOPICS ──────────────────────────────────────────────────────────
+
+model LearningTopic {
+  id               String     @id @default(cuid())
+  title            String
+  description      String
+  category         String
+  difficulty       Difficulty
+  estimatedMinutes Int
+  order            Int
+  slug             String     @unique
+  createdAt        DateTime   @default(now())
+
+  // Relations
+  lessons  Lesson[]
+  progress UserProgress[]
+
+  @@index([slug])
+  @@index([order])
+}
+
+// ─── LESSONS ──────────────────────────────────────────────────────────────────
+
+model Lesson {
+  id        String   @id @default(cuid())
+  topicId   String
+  title     String
+  content   Json     // Lesson steps + quizzes as JSON
+  order     Int
+  xpReward  Int      @default(50)
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  // Relations
+  topic            LearningTopic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  progressEntries  LessonProgress[]
+
+  @@index([topicId])
+  @@index([slug])
+}
+
+// ─── USER PROGRESS ────────────────────────────────────────────────────────────
+
+model UserProgress {
+  id             String        @id @default(cuid())
+  userId         String
+  topicId        String
+  progress       Float         @default(0) // 0.0 to 1.0
+  completed      Boolean       @default(false)
+  lastAccessedAt DateTime      @updatedAt
+
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic LearningTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, topicId])
+  @@index([userId])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  xpEarned    Int      @default(0)
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+}
+
+// ─── ALGORITHMS ───────────────────────────────────────────────────────────────
+
+model Algorithm {
+  id                  String     @id @default(cuid())
+  name                String
+  slug                String     @unique
+  subtitle            String
+  description         String
+  purpose             String
+  category            String
+  difficulty          Difficulty
+  inventor            String
+  year                Int
+  speedupType         String
+  classicalComplexity String
+  quantumComplexity   String
+  overview            String     @db.Text
+  mathFormalism       String
+  stepsExplanation    Json       // Array of {stepNumber, title, description}
+  realWorldApplications Json     // Array of strings
+  defaultPresetId     String?
+  createdAt           DateTime   @default(now())
+
+  // Relations
+  challenges Challenge[]
+
+  @@index([slug])
+}
+
+// ─── QUANTUM CIRCUITS ─────────────────────────────────────────────────────────
+
+model QuantumCircuit {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  numQubits     Int
+  numColumns    Int      @default(8)
+  circuitData   Json     // Array of PlacedGate objects
+  generatedCode Json?    // {qiskit, cirq, qasm, pennylane}
+  isPublic      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  executions CircuitExecution[]
+
+  @@index([userId])
+}
+
+// ─── CIRCUIT EXECUTIONS / SIMULATIONS ────────────────────────────────────────
+
+model CircuitExecution {
+  id              String   @id @default(cuid())
+  userId          String
+  circuitId       String?
+  backend         String
+  shots           Int
+  counts          Json     // {"00": 512, "11": 512}
+  probabilities   Json     // {"00": 0.5, "11": 0.5}
+  stateVector     Json     // Full statevector
+  blochSpheres    Json     // Per-qubit Bloch coordinates
+  executionTimeMs Int
+  success         Boolean
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  circuit QuantumCircuit? @relation(fields: [circuitId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([circuitId])
+}
+
+// ─── CHALLENGES ───────────────────────────────────────────────────────────────
+
+model Challenge {
+  id                  String     @id @default(cuid())
+  title               String
+  slug                String     @unique
+  description         String
+  category            String
+  difficulty          Difficulty
+  xp                  Int        @default(100)
+  instructions        Json       // Array of instruction strings
+  expectedDistribution Json      // {"00": 0.5, "11": 0.5}
+  hints               Json       // Array of hint strings
+  targetQubits        Int
+  algorithmId         String?
+  createdAt           DateTime   @default(now())
+
+  algorithm   Algorithm?            @relation(fields: [algorithmId], references: [id])
+  submissions ChallengeSubmission[]
+
+  @@index([slug])
+}
+
+model ChallengeSubmission {
+  id          String   @id @default(cuid())
+  userId      String
+  challengeId String
+  circuitData Json     // The submitted circuit
+  result      Json     // Full ChallengeSubmissionResult
+  score       Float
+  passed      Boolean
+  fidelity    Float
+  xpEarned    Int      @default(0)
+  feedback    String
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id])
+
+  @@index([userId])
+  @@index([challengeId])
+}
+
+// ─── AI CONVERSATIONS ─────────────────────────────────────────────────────────
+
+model AIConversation {
+  id        String      @id @default(cuid())
+  userId    String
+  title     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AIMessage[]
+
+  @@index([userId])
+}
+
+model AIMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String   // "user" | "assistant"
+  content        String   @db.Text
+  createdAt      DateTime @default(now())
+
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
