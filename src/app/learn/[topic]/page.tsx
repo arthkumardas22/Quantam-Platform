@@ -72,26 +72,26 @@ export default function LessonPlayerPage({
 
   return (
     <AppShell>
-      <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-6">
+      <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto space-y-5 sm:space-y-6 text-[#723480]">
         {/* Back and Breadcrumbs Navigation */}
         <div className="flex items-center justify-between">
           <Link
             href="/learn"
-            className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-cyan-700 transition-colors"
+            className="flex items-center gap-2 text-xs font-bold text-[#808034] hover:text-[#531D5E] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Learning Hub</span>
           </Link>
 
-          <Badge variant="cyan">
+          <Badge variant="plum">
             Step {currentStepIndex + 1} of {lesson.totalSteps}
           </Badge>
         </div>
 
         {/* Lesson Progress Step Bar */}
-        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden border border-slate-200">
+        <div className="w-full bg-[#DBD4FF] rounded-full h-2.5 overflow-hidden border border-[#DBD4FF]">
           <div
-            className="h-full bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-[#723480] via-[#531D5E] to-[#808034] rounded-full transition-all duration-300"
             style={{
               width: `${((currentStepIndex + 1) / lesson.totalSteps) * 100}%`,
             }}
@@ -99,20 +99,20 @@ export default function LessonPlayerPage({
         </div>
 
         {/* Main Lesson Content Card */}
-        <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xl space-y-6">
+        <div className="p-5 sm:p-8 rounded-3xl bg-white border-2 border-[#DBD4FF] shadow-xs space-y-6">
           {/* Step Header */}
-          <div className="border-b border-slate-100 pb-4">
-            <span className="text-[11px] font-mono font-bold text-cyan-700 uppercase tracking-wider">
+          <div className="border-b border-[#DBD4FF] pb-4">
+            <span className="text-[11px] font-mono font-bold text-[#808034] uppercase tracking-wider">
               {lesson.title}
             </span>
-            <h2 className="text-2xl font-extrabold text-slate-900 mt-1">
+            <h2 className="text-xl sm:text-2xl font-black text-[#723480] mt-1">
               {step.title}
             </h2>
-            <p className="text-xs text-slate-500 mt-1">{step.conceptSummary}</p>
+            <p className="text-xs text-[#808034] font-bold mt-1">{step.conceptSummary}</p>
           </div>
 
           {/* Explanation Body */}
-          <div className="prose prose-slate max-w-none text-slate-700 text-sm leading-relaxed space-y-4 font-normal">
+          <div className="prose prose-slate max-w-none text-[#723480] text-xs sm:text-sm leading-relaxed space-y-4 font-normal">
             {step.explanationMarkdown.split('\n\n').map((paragraph, idx) => (
               <p key={idx}>{paragraph}</p>
             ))}
@@ -120,24 +120,24 @@ export default function LessonPlayerPage({
 
           {/* Math Formula Highlight Box */}
           {step.mathFormula && (
-            <div className="p-4 rounded-2xl bg-cyan-50 border border-cyan-200 font-mono text-center shadow-xs">
-              <span className="text-[10px] uppercase text-cyan-800 font-bold tracking-wider block mb-1">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-[#FFFFE3] border-2 border-[#DBD4FF] font-mono text-center shadow-xs overflow-x-auto">
+              <span className="text-[10px] uppercase text-[#808034] font-bold tracking-wider block mb-1">
                 Mathematical Formalism
               </span>
-              <div className="text-base sm:text-lg font-bold text-cyan-900">
+              <div className="text-sm sm:text-base md:text-lg font-black text-[#531D5E]">
                 {step.mathFormula}
               </div>
             </div>
           )}
 
           {/* Key Takeaway Card */}
-          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-start gap-3 shadow-xs">
-            <Lightbulb className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-[#FFFFE3] border-2 border-[#DBD4FF] flex items-start gap-3 shadow-xs">
+            <Lightbulb className="w-5 h-5 text-[#808034] shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+              <h4 className="text-xs font-black text-[#531D5E] uppercase tracking-wider">
                 Key Quantum Takeaway
               </h4>
-              <p className="text-xs text-slate-700 mt-0.5 leading-relaxed">
+              <p className="text-xs text-[#723480] mt-0.5 leading-relaxed font-medium">
                 {step.keyTakeaway}
               </p>
             </div>
@@ -145,10 +145,10 @@ export default function LessonPlayerPage({
 
           {/* Embedded Interactive Circuit Snippet if present */}
           {step.circuitSnippet && (
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 shadow-sm">
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#FFFFE3]/40 border-2 border-[#DBD4FF] space-y-3 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800 flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-cyan-600" />
+                <span className="text-xs font-bold text-[#723480] flex items-center gap-2">
+                  <Cpu className="w-4 h-4 text-[#723480]" />
                   Interactive Circuit Demonstration
                 </span>
                 <Link href="/workspace">
@@ -159,18 +159,18 @@ export default function LessonPlayerPage({
               </div>
 
               {/* Wire Preview */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200 font-mono text-xs space-y-3 shadow-inner">
+              <div className="p-3 sm:p-4 rounded-xl bg-white border border-[#DBD4FF] font-mono text-xs space-y-3 shadow-inner overflow-x-auto">
                 {Array.from({ length: step.circuitSnippet.qubits }).map((_, q) => (
-                  <div key={q} className="flex items-center gap-4">
-                    <span className="font-bold text-cyan-700 w-8">q{q} |0⟩</span>
+                  <div key={q} className="flex items-center gap-3 sm:gap-4 min-w-[280px]">
+                    <span className="font-bold text-[#723480] w-12 shrink-0">q{q} |0⟩</span>
                     <div className="flex-1 flex items-center relative h-6">
-                      <div className="absolute inset-0 top-1/2 -translate-y-1/2 h-[2px] bg-slate-300" />
+                      <div className="absolute inset-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#DBD4FF]" />
                       {step.circuitSnippet?.gates
                         .filter((g) => g.targetQubit === q)
                         .map((g, idx) => (
                           <div
                             key={idx}
-                            className="z-10 px-2.5 py-1 rounded-lg bg-cyan-50 border border-cyan-400 text-cyan-800 font-bold ml-6 shadow-sm"
+                            className="z-10 px-2.5 py-1 rounded-lg bg-[#DBD4FF] border border-[#531D5E]/40 text-[#531D5E] font-bold ml-6 shadow-xs"
                           >
                             {g.type}
                           </div>
@@ -184,34 +184,34 @@ export default function LessonPlayerPage({
 
           {/* Interactive Knowledge Check Quiz */}
           {step.quiz && (
-            <div className="p-6 rounded-3xl bg-purple-50/50 border border-purple-200 space-y-3.5 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-bold text-purple-900">
-                <HelpCircle className="w-4 h-4 text-purple-600" />
+            <div className="p-4 sm:p-6 rounded-3xl bg-[#DBD4FF]/40 border-2 border-[#DBD4FF] space-y-3.5 shadow-xs">
+              <div className="flex items-center gap-2 text-xs font-black text-[#531D5E]">
+                <HelpCircle className="w-4 h-4 text-[#531D5E]" />
                 <span>Concept Knowledge Check</span>
               </div>
-              <p className="text-xs text-slate-800 font-semibold">
+              <p className="text-xs font-bold text-[#723480]">
                 {step.quiz.question}
               </p>
 
               <div className="space-y-2">
                 {step.quiz.options.map((option, optIdx) => {
-                  let buttonStyle = 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50';
+                  let buttonStyle = 'bg-white text-[#723480] border-[#DBD4FF] hover:border-[#531D5E] hover:bg-[#FFFFE3]';
 
                   if (quizSubmitted) {
                     if (optIdx === step.quiz?.correctIndex) {
-                      buttonStyle = 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold shadow-sm';
+                      buttonStyle = 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold shadow-xs';
                     } else if (selectedQuizAnswer === optIdx) {
                       buttonStyle = 'bg-rose-50 text-rose-900 border-rose-400';
                     }
                   } else if (selectedQuizAnswer === optIdx) {
-                    buttonStyle = 'bg-cyan-50 text-cyan-900 border-cyan-400 font-bold';
+                    buttonStyle = 'bg-[#DBD4FF] text-[#531D5E] border-[#531D5E] font-bold';
                   }
 
                   return (
                     <button
                       key={optIdx}
                       onClick={() => !quizSubmitted && setSelectedQuizAnswer(optIdx)}
-                      className={`w-full text-left p-3.5 rounded-2xl border text-xs transition-all flex items-center justify-between shadow-xs ${buttonStyle}`}
+                      className={`w-full text-left p-3 sm:p-3.5 rounded-2xl border text-xs transition-all flex items-center justify-between shadow-xs cursor-pointer ${buttonStyle}`}
                     >
                       <span>{option}</span>
                       {quizSubmitted && optIdx === step.quiz?.correctIndex && (
@@ -225,7 +225,7 @@ export default function LessonPlayerPage({
               {!quizSubmitted && selectedQuizAnswer !== null && (
                 <Button
                   size="sm"
-                  variant="quantum"
+                  variant="primary"
                   onClick={() => setQuizSubmitted(true)}
                   className="mt-2"
                 >
@@ -234,8 +234,8 @@ export default function LessonPlayerPage({
               )}
 
               {quizSubmitted && (
-                <div className="p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-700 leading-relaxed shadow-sm">
-                  <span className="font-bold text-cyan-700">Explanation: </span>
+                <div className="p-3.5 rounded-2xl bg-white border border-[#DBD4FF] text-xs text-[#723480] leading-relaxed shadow-xs">
+                  <span className="font-bold text-[#531D5E]">Explanation: </span>
                   {step.quiz.explanation}
                 </div>
               )}
@@ -243,28 +243,29 @@ export default function LessonPlayerPage({
           )}
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-5 sm:pt-6 border-t border-[#DBD4FF] gap-2">
             <Button
-              variant="secondary"
+              variant="outline"
               size="md"
               onClick={handlePrev}
               disabled={currentStepIndex === 0}
               leftIcon={<ArrowLeft className="w-4 h-4" />}
             >
-              Previous Step
+              Previous
             </Button>
 
             <Button
-              variant="quantum"
+              variant="primary"
               size="md"
               onClick={handleNext}
               rightIcon={isLastStep ? <Trophy className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
             >
-              {isLastStep ? 'Complete Module (+XP)' : 'Next Step'}
+              {isLastStep ? 'Complete (+XP)' : 'Next Step'}
             </Button>
           </div>
         </div>
       </div>
     </AppShell>
+
   );
 }

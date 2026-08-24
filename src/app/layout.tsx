@@ -1,17 +1,29 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { QuantumProvider } from '@/context/QuantumContext';
 import { UserProvider } from '@/context/UserContext';
+import { QuantumMouseFollower } from '@/components/ui/QuantumMouseFollower';
 
-const inter = Inter({
+const outfit = Outfit({
+  variable: '--font-display',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
   variable: '--font-sans',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -26,10 +38,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-slate-50 text-slate-900 font-sans flex flex-col antialiased">
+    <html
+      lang="en"
+      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full bg-[#FFFFE3] text-[#723480] font-sans flex flex-col antialiased selection:bg-[#DBD4FF] selection:text-[#531D5E]">
         <UserProvider>
-          <QuantumProvider>{children}</QuantumProvider>
+          <QuantumProvider>
+            <QuantumMouseFollower />
+            {children}
+          </QuantumProvider>
         </UserProvider>
       </body>
     </html>

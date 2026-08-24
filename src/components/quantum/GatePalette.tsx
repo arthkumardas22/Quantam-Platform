@@ -177,8 +177,8 @@ export const GatePalette: React.FC = () => {
   const categories = [
     { id: 'all', label: 'All' },
     { id: 'single', label: 'Single' },
-    { id: 'controlled', label: 'Multi/CNOT' },
-    { id: 'phase', label: 'Phase/Rot' },
+    { id: 'controlled', label: 'Multi/CX' },
+    { id: 'phase', label: 'Phase' },
     { id: 'measurement', label: 'Measure' },
   ];
 
@@ -198,29 +198,45 @@ export const GatePalette: React.FC = () => {
   };
 
   return (
-    <div className="w-60 shrink-0 bg-white border-r border-slate-200 flex flex-col h-full select-none shadow-sm">
+    <div className="w-full lg:w-60 shrink-0 bg-white border-r border-[#DBD4FF] flex flex-col h-full select-none shadow-xs text-[#723480]">
       {/* Header */}
-      <div className="p-3.5 border-b border-slate-200 flex items-center justify-between">
+      <div className="p-3 sm:p-3.5 border-b border-[#DBD4FF] flex items-center justify-between bg-[#FFFFE3]">
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-cyan-600" />
-          <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          <Layers className="w-4 h-4 text-[#723480]" />
+          <h2 className="text-xs font-black text-[#723480] uppercase tracking-wider">
             Gate Palette
           </h2>
         </div>
-        <span className="text-[10px] text-slate-500 font-mono">Drag or Click</span>
+        <span className="text-[10px] text-[#808034] font-mono font-bold">Tap / Drag</span>
       </div>
 
+      {/* Selected Gate Touch Banner */}
+      {selectedPaletteGate && (
+        <div className="px-3 py-1.5 bg-[#DBD4FF] border-b border-[#531D5E]/30 flex items-center justify-between text-xs font-bold text-[#531D5E] animate-fade-in">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#531D5E] animate-ping" />
+            <span>Gate [{selectedPaletteGate}] active: Tap wire to place</span>
+          </div>
+          <button
+            onClick={() => setSelectedPaletteGate(null)}
+            className="text-[10px] text-[#531D5E] underline font-mono cursor-pointer"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* Category Tabs */}
-      <div className="flex flex-wrap gap-1 p-2.5 border-b border-slate-200 bg-slate-50">
+      <div className="flex items-center gap-1 p-2 sm:p-2.5 border-b border-[#DBD4FF] bg-[#FFFFE3]/50 overflow-x-auto scrollbar-none">
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setActiveCategory(cat.id as any)}
             className={cn(
-              'text-[11px] px-2 py-1 rounded-lg font-medium transition-all',
+              'text-[11px] px-2.5 py-1 rounded-xl font-bold transition-all shrink-0 cursor-pointer',
               activeCategory === cat.id
-                ? 'bg-cyan-100 text-cyan-800 border border-cyan-300 font-semibold shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-[#531D5E] text-[#FFFFE3] shadow-xs'
+                : 'text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF]/60 border border-transparent'
             )}
           >
             {cat.label}
@@ -229,8 +245,8 @@ export const GatePalette: React.FC = () => {
       </div>
 
       {/* Gates Grid */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
-        <div className="grid grid-cols-2 gap-2">
+      <div className="flex-1 overflow-y-auto p-2.5 sm:p-3 space-y-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2">
           {filteredGates.map((gate) => {
             const isSelected = selectedPaletteGate === gate.type;
             const style = getGateColor(gate.type);
@@ -244,17 +260,17 @@ export const GatePalette: React.FC = () => {
                 onMouseEnter={() => setHoveredGate(gate)}
                 onMouseLeave={() => setHoveredGate(null)}
                 className={cn(
-                  'relative group flex flex-col items-center justify-center p-2.5 rounded-xl cursor-grab active:cursor-grabbing border shadow-sm transition-all duration-200 bg-white',
+                  'relative group flex flex-col items-center justify-center p-2.5 rounded-2xl cursor-pointer border shadow-xs transition-all duration-200 bg-white select-none',
                   style.border,
                   isSelected
-                    ? 'ring-2 ring-cyan-500 bg-cyan-50 shadow-md scale-102 font-bold'
-                    : 'hover:scale-103 hover:border-slate-400 hover:bg-slate-50'
+                    ? 'ring-2 ring-[#531D5E] bg-[#DBD4FF] shadow-md scale-102 font-black border-[#531D5E]'
+                    : 'hover:scale-103 hover:border-[#531D5E] hover:bg-[#FFFFE3]'
                 )}
               >
-                <span className={cn('font-mono font-bold text-base', style.text)}>
+                <span className={cn('font-mono font-black text-base', style.text)}>
                   {gate.symbol}
                 </span>
-                <span className="text-[10px] text-slate-600 font-medium truncate max-w-[85px] mt-0.5">
+                <span className="text-[10px] text-[#808034] font-bold truncate max-w-[85px] mt-0.5">
                   {gate.name}
                 </span>
               </div>
@@ -264,23 +280,23 @@ export const GatePalette: React.FC = () => {
       </div>
 
       {/* Gate Information Inspector */}
-      <div className="p-3 border-t border-slate-200 bg-slate-50 min-h-[110px] flex flex-col justify-center">
+      <div className="p-3 border-t border-[#DBD4FF] bg-[#FFFFE3] min-h-[100px] flex flex-col justify-center">
         {hoveredGate || (selectedPaletteGate && GATE_DEFINITIONS.find((g) => g.type === selectedPaletteGate)) ? (
           (() => {
             const current = hoveredGate || GATE_DEFINITIONS.find((g) => g.type === selectedPaletteGate)!;
             return (
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">{current.name}</span>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 border border-cyan-200 font-bold">
+                  <span className="text-xs font-bold text-[#531D5E]">{current.name}</span>
+                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded-md bg-[#DBD4FF] text-[#531D5E] border border-[#531D5E]/30 font-bold">
                     {current.symbol}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-600 mt-1 leading-tight">
+                <p className="text-[11px] text-[#723480] mt-1 leading-tight font-medium">
                   {current.description}
                 </p>
                 {current.matrixDisplay && (
-                  <div className="mt-1.5 text-[10px] font-mono text-cyan-800 bg-cyan-50/80 px-2 py-0.5 rounded border border-cyan-200 font-semibold">
+                  <div className="mt-1.5 text-[10px] font-mono text-[#531D5E] bg-white px-2 py-0.5 rounded-lg border border-[#DBD4FF] font-bold overflow-x-auto">
                     {current.matrixDisplay}
                   </div>
                 )}
@@ -288,12 +304,13 @@ export const GatePalette: React.FC = () => {
             );
           })()
         ) : (
-          <div className="text-center text-slate-400 text-[11px] flex flex-col items-center gap-1">
-            <HelpCircle className="w-4 h-4 text-slate-400" />
-            <span>Hover or select a gate to view its unitary matrix & theory.</span>
+          <div className="text-center text-[#808034] text-[11px] flex flex-col items-center gap-1 font-bold">
+            <HelpCircle className="w-4 h-4 text-[#808034]" />
+            <span>Tap or hover a gate to inspect unitary matrix.</span>
           </div>
         )}
       </div>
     </div>
   );
 };
+

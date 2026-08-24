@@ -5,8 +5,8 @@ import { sendSuccess } from '../utils/responseFormatter';
 
 export async function chat(req: Request, res: Response, next: NextFunction) {
   try {
-    const { message, circuit, history } = aiChatSchema.parse(req.body);
-    const response = await aiService.askAITutorService(message, circuit, history);
+    const { message, circuit, history, modelPreference, apiKey } = aiChatSchema.parse(req.body);
+    const response = await aiService.askAITutorService(message, circuit, history, modelPreference, apiKey);
     return sendSuccess(res, {
       message: response,
       timestamp: new Date().toISOString(),

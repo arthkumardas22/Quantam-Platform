@@ -1,90 +1,157 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --sidebar-bg: #ffffff;
-  --panel-bg: #ffffff;
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --quantum-cyan: #0891b2;
-  --quantum-purple: #9333ea;
-  --quantum-emerald: #059669;
-  --quantum-amber: #d97706;
+  /* ══════════════════════════════════════════════════════════════════════════
+     STRICT 4-COLOR PALETTE: "COUNTRY GARDEN" (With Rich Darker Hover Shades)
+     ══════════════════════════════════════════════════════════════════════════
+     1. #FFFFE3 : Buttercream Primrose (Main Canvas & Clean Surfaces)
+     2. #DBD4FF : Lavender Mist (Surface Cards, Structural Borders)
+     3. #808034 : Olive Gold Moss (Secondary Accents & Complexity Badges)
+     4. #723480 : Deep Royal Plum Purple (Primary Headings & CTAs)
+
+     Darker Hover Shades:
+     • #531D5E / #42134C : Dark Royal Plum Hover
+     • #5E5E22 : Dark Olive Gold Hover
+     • #BDB3FA : Deepened Lavender Hover
+     ══════════════════════════════════════════════════════════════════════════ */
+  --bg-canvas: #ffffe3;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #dbd4ff;
+
+  --text-primary: #723480;
+  --text-secondary: #808034;
+  --text-muted: #723480;
+
+  --border-structural: #dbd4ff;
+  --border-active: #531d5e;
+
+  --accent-plum: #723480;
+  --accent-plum-dark: #531d5e;
+  --accent-plum-glow: rgba(83, 29, 94, 0.4);
+
+  --accent-lavender: #dbd4ff;
+  --accent-lavender-dark: #bdb3fa;
+
+  --accent-olive: #808034;
+  --accent-olive-dark: #5e5e22;
+
+  --accent-cream: #ffffe3;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #ffffe3;
+  color: #723480;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
+  letter-spacing: -0.015em;
 }
 
-/* Custom Light Scrollbars */
+/* Modern Display Font for Headings */
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.03em;
+}
+
+code, kbd, samp, pre, .font-mono {
+  font-family: var(--font-mono), monospace;
+}
+
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.8);
+  background: #ffffe3;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 1);
+  background: #dbd4ff;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 1);
+  background: #531d5e;
 }
 
-/* Light Glassmorphism panel styles */
+/* Darker Mouse Hover Card Effects */
+.hover-card-garden {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-card-garden:hover {
+  transform: translateY(-4px);
+  border-color: #531d5e !important;
+  box-shadow: 0 14px 32px rgba(83, 29, 94, 0.22), 0 0 20px rgba(114, 52, 128, 0.15);
+}
+
+.hover-dark-pill {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-dark-pill:hover {
+  background-color: #531d5e !important;
+  color: #ffffe3 !important;
+  border-color: #531d5e !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(83, 29, 94, 0.3);
+}
+
+/* Glass Panels */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 227, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid #dbd4ff;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: #ffffff;
+  border: 1px solid #dbd4ff;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(8, 145, 178, 0.4);
-  box-shadow: 0 4px 20px rgba(8, 145, 178, 0.08);
+  border-color: #531d5e;
+  box-shadow: 0 12px 32px rgba(83, 29, 94, 0.2);
+  transform: translateY(-3px);
+}
+
+/* 3D Card Base */
+.quantum-dark-card {
+  background: #723480;
+  border: 1px solid #dbd4ff;
+  box-shadow: 0 16px 40px rgba(83, 29, 94, 0.35);
+  color: #ffffe3;
 }
 
 /* Qubit Wire Line */
 .qubit-wire-line {
   height: 2px;
-  background: linear-gradient(90deg, rgba(8, 145, 178, 0.6) 0%, rgba(99, 102, 241, 0.6) 50%, rgba(147, 51, 234, 0.6) 100%);
+  background: linear-gradient(90deg, #723480 0%, #808034 50%, #dbd4ff 100%);
 }
 
-/* Glowing text effects */
-.glow-cyan {
-  text-shadow: 0 0 10px rgba(8, 145, 178, 0.3);
+/* Gradients */
+.text-gradient-garden {
+  background: linear-gradient(135deg, #531d5e 0%, #723480 50%, #5e5e22 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.glow-purple {
-  text-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
-}
-
-/* Pulse animation */
-@keyframes quantumPulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
+/* Spin animation */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.04);
+  to {
+    transform: rotate(360deg);
   }
 }
 
-.animate-quantum-pulse {
-  animation: quantumPulse 2.5s infinite ease-in-out;
+.animate-spin-slow {
+  animation: spinSlow 20s linear infinite;
 }

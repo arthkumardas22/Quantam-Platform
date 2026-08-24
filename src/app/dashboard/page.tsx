@@ -42,22 +42,22 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+      <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-5 sm:space-y-6 text-[#723480]">
         {/* Welcome Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-black text-[#531D5E] tracking-tight flex items-center gap-2">
               <span>Welcome Back, Quantum Scholar</span>
-              <span className="text-xl">⚛️</span>
+              <span className="text-lg">⚛️</span>
             </h1>
-            <p className="text-xs text-slate-600 mt-1">
-              You are on a <span className="text-amber-700 font-bold">{progress.streakDays}-day streak</span>! Ready to explore quantum superposition today?
+            <p className="text-xs text-[#808034] font-bold mt-1">
+              You are on a <span className="text-[#531D5E] font-black">{progress.streakDays}-day streak</span>! Ready to explore quantum circuits today?
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <Link href="/workspace">
-              <Button variant="quantum" size="sm" leftIcon={<Cpu className="w-3.5 h-3.5" />}>
+              <Button variant="primary" size="sm" leftIcon={<Cpu className="w-3.5 h-3.5" />}>
                 Launch Quantum Studio
               </Button>
             </Link>
@@ -65,85 +65,85 @@ export default function DashboardPage() {
         </div>
 
         {/* 4 Metric Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Daily Streak */}
-          <div className="p-4 rounded-3xl bg-white border border-amber-200 flex items-center gap-3.5 shadow-sm">
-            <div className="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200 shadow-sm">
-              <Flame className="w-6 h-6 fill-amber-500 text-amber-500" />
+          <div className="p-3.5 sm:p-4 rounded-3xl bg-white border-2 border-[#DBD4FF] flex items-center gap-3.5 shadow-xs">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#FFFFE3] text-[#808034] flex items-center justify-center shrink-0 border border-[#DBD4FF] shadow-xs">
+              <Flame className="w-5 h-5 sm:w-6 sm:h-6 fill-[#808034] text-[#808034]" />
             </div>
             <div>
-              <div className="text-2xl font-extrabold font-mono text-amber-800">
-                {progress.streakDays} <span className="text-xs font-normal">Days</span>
+              <div className="text-xl sm:text-2xl font-black font-mono text-[#531D5E]">
+                {progress.streakDays} <span className="text-xs font-bold">Days</span>
               </div>
-              <div className="text-xs font-medium text-slate-500">Active Study Streak</div>
+              <div className="text-xs font-bold text-[#808034]">Active Study Streak</div>
             </div>
           </div>
 
           {/* Algorithms Mastered */}
-          <div className="p-4 rounded-3xl bg-white border border-cyan-200 flex items-center gap-3.5 shadow-sm">
-            <div className="w-11 h-11 rounded-2xl bg-cyan-50 text-cyan-700 flex items-center justify-center shrink-0 border border-cyan-200 shadow-sm">
-              <Atom className="w-6 h-6" />
+          <div className="p-3.5 sm:p-4 rounded-3xl bg-white border-2 border-[#DBD4FF] flex items-center gap-3.5 shadow-xs">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#DBD4FF] text-[#531D5E] flex items-center justify-center shrink-0 border border-[#DBD4FF] shadow-xs">
+              <Atom className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <div className="text-2xl font-extrabold font-mono text-cyan-800">
+              <div className="text-xl sm:text-2xl font-black font-mono text-[#531D5E]">
                 {progress.algorithmsMastered} / {progress.totalAlgorithms}
               </div>
-              <div className="text-xs font-medium text-slate-500">Algorithms Mastered</div>
+              <div className="text-xs font-bold text-[#808034]">Algorithms Mastered</div>
             </div>
           </div>
 
           {/* Circuit Challenges */}
-          <div className="p-4 rounded-3xl bg-white border border-purple-200 flex items-center gap-3.5 shadow-sm">
-            <div className="w-11 h-11 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 border border-purple-200 shadow-sm">
-              <Trophy className="w-6 h-6" />
+          <div className="p-3.5 sm:p-4 rounded-3xl bg-white border-2 border-[#DBD4FF] flex items-center gap-3.5 shadow-xs">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#FFFFE3] text-[#723480] flex items-center justify-center shrink-0 border border-[#DBD4FF] shadow-xs">
+              <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <div className="text-2xl font-extrabold font-mono text-purple-800">
+              <div className="text-xl sm:text-2xl font-black font-mono text-[#723480]">
                 {progress.challengesCompleted} / {progress.totalChallenges}
               </div>
-              <div className="text-xs font-medium text-slate-500">Challenges Solved</div>
+              <div className="text-xs font-bold text-[#808034]">Challenges Solved</div>
             </div>
           </div>
 
           {/* Simulations Run */}
-          <div className="p-4 rounded-3xl bg-white border border-emerald-200 flex items-center gap-3.5 shadow-sm">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200 shadow-sm">
-              <Cpu className="w-6 h-6" />
+          <div className="p-3.5 sm:p-4 rounded-3xl bg-white border-2 border-[#DBD4FF] flex items-center gap-3.5 shadow-xs">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#DBD4FF] text-[#723480] flex items-center justify-center shrink-0 border border-[#DBD4FF] shadow-xs">
+              <Cpu className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <div className="text-2xl font-extrabold font-mono text-emerald-800">
+              <div className="text-xl sm:text-2xl font-black font-mono text-[#531D5E]">
                 {progress.simulationsRun}
               </div>
-              <div className="text-xs font-medium text-slate-500">Circuits Simulated</div>
+              <div className="text-xs font-bold text-[#808034]">Circuits Simulated</div>
             </div>
           </div>
         </div>
 
         {/* Continue Learning & Weekly Analytics Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
           {/* Continue Learning Hero Card */}
-          <div className="lg:col-span-1 p-6 rounded-3xl bg-gradient-to-br from-cyan-50 via-white to-purple-50 border border-cyan-200 shadow-md flex flex-col justify-between relative overflow-hidden">
+          <div className="lg:col-span-1 p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#DBD4FF] shadow-xs flex flex-col justify-between relative overflow-hidden">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <Badge variant="cyan">In Progress • 72%</Badge>
-                <span className="text-[11px] font-mono text-slate-500 font-semibold">15 min remaining</span>
+                <Badge variant="plum">In Progress • 72%</Badge>
+                <span className="text-[11px] font-mono text-[#808034] font-bold">15 min left</span>
               </div>
 
-              <h3 className="text-lg font-bold text-slate-900 mb-1">
+              <h3 className="text-base sm:text-lg font-black text-[#531D5E] mb-1">
                 {activeLesson.title}
               </h3>
-              <p className="text-xs text-slate-600 leading-relaxed line-clamp-2 mb-4">
+              <p className="text-xs text-[#723480]/80 leading-relaxed line-clamp-2 mb-4">
                 {activeLesson.subtitle}
               </p>
 
               {/* Progress Bar */}
               <div className="space-y-1.5 mb-4">
-                <div className="flex justify-between text-[11px] text-slate-500 font-mono font-medium">
+                <div className="flex justify-between text-[11px] text-[#808034] font-mono font-bold">
                   <span>Module Progress</span>
-                  <span className="text-cyan-800 font-bold">Step 3 of 4</span>
+                  <span className="text-[#531D5E]">Step 3 of 4</span>
                 </div>
-                <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-cyan-500 to-purple-600 w-[72%] rounded-full" />
+                <div className="w-full h-2.5 bg-[#DBD4FF] rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#723480] to-[#531D5E] w-[72%] rounded-full" />
                 </div>
               </div>
             </div>
@@ -156,16 +156,16 @@ export default function DashboardPage() {
           </div>
 
           {/* Weekly Learning Activity Chart */}
-          <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-slate-200 shadow-md flex flex-col">
+          <div className="lg:col-span-2 p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#DBD4FF] shadow-xs flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-cyan-600" />
+                <h3 className="text-sm font-black text-[#531D5E] flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-[#723480]" />
                   Weekly Quantum Activity
                 </h3>
-                <p className="text-[11px] text-slate-500">Simulations executed per day</p>
+                <p className="text-[11px] text-[#808034] font-bold">Simulations executed per day</p>
               </div>
-              <span className="text-xs font-mono font-bold text-cyan-800 bg-cyan-50 px-2.5 py-1 rounded-xl border border-cyan-200">
+              <span className="text-xs font-mono font-bold text-[#531D5E] bg-[#DBD4FF] px-2.5 py-1 rounded-xl border border-[#531D5E]/30">
                 +24% vs last week
               </span>
             </div>
@@ -174,25 +174,25 @@ export default function DashboardPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={progress.weeklyActivity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
-                    <linearGradient id="colorSimsLight" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0891b2" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#0891b2" stopOpacity={0} />
+                    <linearGradient id="colorSimsGarden" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#531D5E" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#531D5E" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="day" stroke="#64748b" tick={{ fill: '#475569', fontSize: 11 }} />
-                  <YAxis stroke="#64748b" tick={{ fill: '#475569', fontSize: 11 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffe3" vertical={false} />
+                  <XAxis dataKey="day" stroke="#808034" tick={{ fill: '#723480', fontSize: 11 }} />
+                  <YAxis stroke="#808034" tick={{ fill: '#723480', fontSize: 11 }} />
                   <Tooltip
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         const data = payload[0].payload;
                         return (
-                          <div className="bg-white border border-slate-200 p-2.5 rounded-xl shadow-xl font-mono text-xs text-slate-800">
-                            <div className="font-bold text-cyan-700">{data.day}</div>
-                            <div className="text-slate-700">
-                              Simulations: <span className="text-emerald-700 font-bold">{data.simulations}</span>
+                          <div className="bg-white border border-[#DBD4FF] p-2.5 rounded-xl shadow-xl font-mono text-xs text-[#723480]">
+                            <div className="font-black text-[#531D5E]">{data.day}</div>
+                            <div className="text-[#723480] font-bold">
+                              Simulations: <span className="text-[#531D5E] font-black">{data.simulations}</span>
                             </div>
-                            <div className="text-slate-500 text-[10px]">Study Time: {data.minutes} mins</div>
+                            <div className="text-[#808034] text-[10px] font-bold">Study Time: {data.minutes} mins</div>
                           </div>
                         );
                       }
@@ -202,10 +202,10 @@ export default function DashboardPage() {
                   <Area
                     type="monotone"
                     dataKey="simulations"
-                    stroke="#0891b2"
+                    stroke="#531D5E"
                     strokeWidth={2.5}
                     fillOpacity={1}
-                    fill="url(#colorSimsLight)"
+                    fill="url(#colorSimsGarden)"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -215,47 +215,47 @@ export default function DashboardPage() {
 
         {/* Recommended Algorithms Section */}
         <div>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Recommended Quantum Algorithms</h3>
-              <p className="text-xs text-slate-500">Hand-picked modules based on your current progress</p>
+              <h3 className="text-sm sm:text-base font-black text-[#531D5E]">Recommended Algorithms</h3>
+              <p className="text-xs text-[#808034] font-bold">Hand-picked modules based on your progress</p>
             </div>
-            <Link href="/algorithms" className="text-xs font-bold text-cyan-700 hover:text-cyan-800 flex items-center gap-1">
+            <Link href="/algorithms" className="text-xs font-bold text-[#531D5E] hover:text-[#723480] flex items-center gap-1">
               <span>View All</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
             {recommendedAlgorithms.map((algo) => (
               <div
                 key={algo.id}
-                className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-cyan-400 transition-all flex flex-col justify-between group shadow-sm hover:shadow-md"
+                className="p-4 sm:p-5 rounded-3xl bg-white border-2 border-[#DBD4FF] hover-card-garden transition-all flex flex-col justify-between group shadow-xs"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <Badge variant="purple">{algo.category}</Badge>
-                    <span className="text-[10px] font-mono text-emerald-700 font-bold">
+                    <Badge variant="plum">{algo.category}</Badge>
+                    <span className="text-[10px] font-mono text-[#531D5E] font-black">
                       {algo.quantumComplexity}
                     </span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-cyan-700 transition-colors">
+                  <h4 className="text-sm font-black text-[#723480] mb-1 group-hover:text-[#531D5E] transition-colors">
                     {algo.name}
                   </h4>
-                  <p className="text-xs text-slate-600 line-clamp-2 mb-4 leading-relaxed">
+                  <p className="text-xs text-[#723480]/80 line-clamp-2 mb-4 leading-relaxed">
                     {algo.purpose}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                <div className="flex items-center gap-2 pt-2 border-t border-[#DBD4FF]">
                   <Link href={`/algorithms/${algo.id}`} className="flex-1">
-                    <Button variant="secondary" size="sm" className="w-full">
+                    <Button variant="primary" size="sm" className="w-full">
                       Learn
                     </Button>
                   </Link>
                   <Link href="/workspace">
-                    <Button variant="primary" size="sm">
-                      <Play className="w-3 h-3 fill-current" />
+                    <Button variant="outline" size="sm" className="border-[#DBD4FF]">
+                      <Play className="w-3 h-3 fill-current text-[#723480]" />
                     </Button>
                   </Link>
                 </div>
@@ -265,25 +265,25 @@ export default function DashboardPage() {
         </div>
 
         {/* Featured Challenge Spotlight */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-50 via-white to-indigo-50 border border-purple-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+        <div className="p-4 sm:p-6 rounded-3xl bg-[#FFFFE3] border-2 border-[#DBD4FF] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
           <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 border border-purple-200 shadow-xs">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#DBD4FF] text-[#531D5E] flex items-center justify-center shrink-0 border border-[#531D5E]/30 shadow-xs">
               <Trophy className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-purple-900 uppercase tracking-wider">
+                <span className="text-xs font-black text-[#531D5E] uppercase tracking-wider">
                   Upcoming Challenge
                 </span>
-                <Badge variant="amber">+{featuredChallenge.xp} XP</Badge>
+                <Badge variant="plum">+{featuredChallenge.xp} XP</Badge>
               </div>
-              <h4 className="text-sm font-bold text-slate-900 mt-0.5">{featuredChallenge.title}</h4>
-              <p className="text-xs text-slate-600 mt-1 max-w-xl">{featuredChallenge.description}</p>
+              <h4 className="text-sm font-black text-[#723480] mt-0.5">{featuredChallenge.title}</h4>
+              <p className="text-xs text-[#723480]/80 mt-1 max-w-xl">{featuredChallenge.description}</p>
             </div>
           </div>
 
-          <Link href="/challenges" className="shrink-0">
-            <Button variant="quantum" size="sm" rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>
+          <Link href="/challenges" className="shrink-0 w-full sm:w-auto">
+            <Button variant="primary" size="sm" className="w-full sm:w-auto" rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>
               Solve Challenge
             </Button>
           </Link>
@@ -292,3 +292,4 @@ export default function DashboardPage() {
     </AppShell>
   );
 }
+

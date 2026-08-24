@@ -9,10 +9,12 @@ export const chatMessageSchema = z.object({
 });
 
 export const aiChatSchema = z.object({
-  message: z.string().min(1, 'Prompt message is required').max(2000),
+  message: z.string().min(1, 'Prompt message is required').max(3000),
   circuit: circuitStateSchema.optional(),
   history: z.array(chatMessageSchema).optional().default([]),
   conversationId: z.string().optional(),
+  modelPreference: z.string().optional().default('gemini-1.5-flash'),
+  apiKey: z.string().optional(),
 });
 
 export const explainCircuitSchema = z.object({

@@ -4,8 +4,24 @@ import React, { useState } from 'react';
 import { useQuantum } from '@/context/QuantumContext';
 import { GateNode } from './GateNode';
 import { GateType, PlacedGate } from '@/types/quantum';
-import { Plus, Minus, Trash2, RotateCcw } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Plus, Minus, Trash2, RotateCcw, X, Sparkles, Layers, Zap } from 'lucide-react';
+import { cn, getGateColor } from '@/lib/utils';
+import { quantumAudio } from '@/utils/quantumAudio';
+
+const QUICK_GATES: { type: GateType; label: string; desc: string }[] = [
+  { type: 'H', label: 'H', desc: 'Hadamard Superposition' },
+  { type: 'X', label: 'X', desc: 'Pauli-X NOT' },
+  { type: 'CNOT', label: 'CX', desc: 'Controlled-NOT' },
+  { type: 'M', label: 'M', desc: 'Measurement' },
+  { type: 'Z', label: 'Z', desc: 'Phase Flip' },
+  { type: 'S', label: 'S', desc: 'Phase S (π/2)' },
+  { type: 'T', label: 'T', desc: 'Phase T (π/4)' },
+  { type: 'Y', label: 'Y', desc: 'Pauli-Y' },
+  { type: 'SWAP', label: 'SW', desc: 'Swap Qubits' },
+  { type: 'CZ', label: 'CZ', desc: 'Controlled-Z' },
+  { type: 'Rx', label: 'Rx', desc: 'X Rotation' },
+  { type: 'Rz', label: 'Rz', desc: 'Z Rotation' },
+];
 
 export const CircuitBuilder: React.FC = () => {
   const {
@@ -19,6 +35,7 @@ export const CircuitBuilder: React.FC = () => {
   } = useQuantum();
 
   const [dragOverCell, setDragOverCell] = useState<{ qubit: number; column: number } | null>(null);
+  const [quickPickerCell, setQuickPickerCell] = useState<{ qubit: number; column: number } | null>(null);
 
   const numQubits = circuit.numQubits;
   const numColumns = circuit.numColumns;
@@ -42,10 +59,20 @@ export const CircuitBuilder: React.FC = () => {
     placeGateAt(gateType, qubit, column);
   };
 
-  const handleCellClick = (qubit: number, column: number) => {
+  const handleCellClick = (qubit: number, column: number, hasGate: boolean) => {
+    if (hasGate) {
+      setQuickPickerCell(null);
+      return;
+    }
+
     if (selectedPaletteGate) {
       placeGateAt(selectedPaletteGate, qubit, column);
     } else {
+      setQuickPickerCell(
+        quickPickerCell?.qubit === qubit && quickPickerCell?.column === column
+          ? null
+          : { qubit, column }
+      );
       setSelectedGateId(null);
     }
   };
@@ -78,6 +105,8 @@ export const CircuitBuilder: React.FC = () => {
     }
 
     addGate(gateData);
+    quantumAudio.playGateChime(523.25 + column * 35);
+    setQuickPickerCell(null);
   };
 
   // Find multi-qubit connecting vertical lines for SVG overlay
@@ -121,25 +150,79 @@ export const CircuitBuilder: React.FC = () => {
   const HEADER_OFFSET_Y = 32; // px for time step label
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden select-none relative">
+    <div className="flex-1 flex flex-col min-w-0 bg-[#FFFFE3]/40 overflow-hidden select-none relative">
+      {/* Mobile Quick-Gate Bar (Top of Circuit Builder on mobile) */}
+      <div className="lg:hidden p-2 bg-white border-b border-[#DBD4FF] flex items-center gap-1.5 overflow-x-auto scrollbar-none shrink-0 shadow-2xs">
+        <span className="text-[10px] font-mono text-[#808034] font-bold shrink-0 mr-0.5">Quick Gate:</span>
+        {QUICK_GATES.map((g) => {
+          const isSelected = selectedPaletteGate === g.type;
+          const style = getGateColor(g.type);
+
+          return (
+            <button
+              key={g.type}
+              onClick={() => {
+                const next = isSelected ? null : g.type;
+                setSelectedPaletteGate(next);
+                if (next) quantumAudio.playGateChime(587.33);
+              }}
+              className={cn(
+                'px-2.5 py-1 rounded-xl text-xs font-mono font-black border transition-all shrink-0 cursor-pointer shadow-2xs flex items-center gap-1',
+                style.border,
+                isSelected
+                  ? 'bg-[#531D5E] text-[#FFFFE3] border-[#531D5E] scale-105 shadow-xs'
+                  : 'bg-[#FFFFE3] text-[#723480] hover:bg-[#DBD4FF]'
+              )}
+            >
+              <span>{g.label}</span>
+            </button>
+          );
+        })}
+
+        {selectedPaletteGate && (
+          <button
+            onClick={() => setSelectedPaletteGate(null)}
+            className="text-[10px] text-rose-700 underline font-mono font-bold shrink-0 ml-1 cursor-pointer"
+          >
+            Clear Active
+          </button>
+        )}
+      </div>
+
+      {/* Selected Gate Instruction Prompt */}
+      {selectedPaletteGate && (
+        <div className="p-2 bg-[#DBD4FF] border-b border-[#531D5E]/30 flex items-center justify-between text-xs font-bold text-[#531D5E] shrink-0">
+          <div className="flex items-center gap-1.5 truncate">
+            <Sparkles className="w-3.5 h-3.5 text-[#531D5E] shrink-0" />
+            <span>Active Gate [{selectedPaletteGate}]: Tap any empty (+) wire slot to place</span>
+          </div>
+          <button
+            onClick={() => setSelectedPaletteGate(null)}
+            className="text-[10px] px-2 py-0.5 rounded-lg bg-[#531D5E] text-[#FFFFE3] shrink-0 cursor-pointer"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
       {/* Circuit Grid Canvas Container */}
-      <div className="flex-1 overflow-auto p-6 relative">
+      <div className="flex-1 overflow-auto p-4 sm:p-6 relative touch-pan-x touch-pan-y overscroll-contain">
         <div
-          className="relative inline-block min-w-full pb-10"
+          className="relative inline-block min-w-full pb-16"
           style={{
             minWidth: `${HEADER_OFFSET_X + numColumns * COL_WIDTH + 60}px`,
-            minHeight: `${HEADER_OFFSET_Y + numQubits * ROW_HEIGHT + 40}px`,
+            minHeight: `${HEADER_OFFSET_Y + numQubits * ROW_HEIGHT + 60}px`,
           }}
         >
           {/* Time Steps Header */}
           <div
-            className="flex items-center absolute top-0 text-[10px] font-mono text-slate-500 font-bold"
+            className="flex items-center absolute top-0 text-[10px] font-mono text-[#808034] font-bold"
             style={{ left: `${HEADER_OFFSET_X}px` }}
           >
             {Array.from({ length: numColumns }).map((_, c) => (
               <div
                 key={c}
-                className="w-16 flex items-center justify-center text-slate-500 hover:text-cyan-700 transition-colors"
+                className="w-16 flex items-center justify-center text-[#808034] hover:text-[#531D5E] transition-colors"
               >
                 t{c}
               </div>
@@ -162,7 +245,7 @@ export const CircuitBuilder: React.FC = () => {
                     y1={y1}
                     x2={x}
                     y2={y2}
-                    stroke={link.type === 'SWAP' ? '#0d9488' : '#059669'}
+                    stroke={link.type === 'SWAP' ? '#808034' : '#531D5E'}
                     strokeWidth="2.5"
                     strokeDasharray={link.type === 'SWAP' ? '3 3' : 'none'}
                   />
@@ -185,14 +268,14 @@ export const CircuitBuilder: React.FC = () => {
                   style={{ width: `${HEADER_OFFSET_X}px` }}
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-cyan-800">q{q}</span>
-                    <span className="text-[10px] text-slate-500 font-semibold">|0⟩</span>
+                    <span className="text-xs font-bold text-[#723480]">q{q}</span>
+                    <span className="text-[10px] text-[#808034] font-bold">|0⟩</span>
                   </div>
-                  <div className="w-2 h-2 rounded-full bg-cyan-600 shadow-sm shadow-cyan-600/50" />
+                  <div className="w-2 h-2 rounded-full bg-[#723480] shadow-xs" />
                 </div>
 
                 {/* Horizontal Qubit Wire Background Line */}
-                <div className="absolute left-24 right-0 h-[2px] bg-slate-300 group-hover:bg-slate-400 transition-colors z-0" />
+                <div className="absolute left-24 right-0 h-[2px] bg-[#DBD4FF] group-hover:bg-[#531D5E]/60 transition-colors z-0" />
 
                 {/* Dropzone Column Cells */}
                 <div className="flex items-center z-10">
@@ -207,6 +290,8 @@ export const CircuitBuilder: React.FC = () => {
                     );
 
                     const isHovered = dragOverCell?.qubit === q && dragOverCell?.column === c;
+                    const isQuickPickerActive =
+                      quickPickerCell?.qubit === q && quickPickerCell?.column === c;
 
                     return (
                       <div
@@ -214,17 +299,61 @@ export const CircuitBuilder: React.FC = () => {
                         onDragOver={(e) => handleDragOver(e, q, c)}
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, q, c)}
-                        onClick={() => handleCellClick(q, c)}
+                        onClick={() => handleCellClick(q, c, !!placedGate)}
                         className={cn(
-                          'w-16 h-14 flex items-center justify-center relative cursor-pointer rounded-xl transition-all',
-                          isHovered && 'bg-cyan-100/80 ring-2 ring-cyan-500 scale-105',
-                          !placedGate && 'hover:bg-slate-200/50'
+                          'w-16 h-14 flex items-center justify-center relative cursor-pointer rounded-xl transition-all select-none',
+                          isHovered && 'bg-[#DBD4FF] ring-2 ring-[#531D5E] scale-105',
+                          !placedGate && 'hover:bg-[#DBD4FF]/40 active:bg-[#DBD4FF]/60',
+                          isQuickPickerActive && 'ring-2 ring-[#531D5E] bg-[#DBD4FF]'
                         )}
                       >
                         {placedGate ? (
                           <GateNode gate={placedGate} qubitIndex={q} />
                         ) : (
-                          <div className="w-3 h-3 rounded-full border border-dashed border-slate-300 opacity-0 hover:opacity-100 hover:scale-125 transition-all bg-white" />
+                          <div className="w-6 h-6 rounded-lg border border-dashed border-[#DBD4FF] flex items-center justify-center text-[#808034] text-xs font-bold hover:border-[#531D5E] hover:text-[#531D5E] hover:scale-115 transition-all bg-white/80 shadow-2xs">
+                            +
+                          </div>
+                        )}
+
+                        {/* Quick Gate Picker Popover Menu on Cell Tap */}
+                        {isQuickPickerActive && (
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute top-12 left-1/2 -translate-x-1/2 z-40 p-3 rounded-2xl bg-white border-2 border-[#DBD4FF] shadow-2xl w-64 flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-150"
+                          >
+                            <div className="flex items-center justify-between pb-1.5 border-b border-[#DBD4FF]">
+                              <span className="text-[11px] font-black text-[#531D5E]">
+                                Insert Gate at (q{q}, t{c})
+                              </span>
+                              <button
+                                onClick={() => setQuickPickerCell(null)}
+                                className="p-0.5 rounded-md text-[#723480] hover:bg-[#DBD4FF] cursor-pointer"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            <div className="grid grid-cols-4 gap-1.5">
+                              {QUICK_GATES.map((g) => {
+                                const style = getGateColor(g.type);
+                                return (
+                                  <button
+                                    key={g.type}
+                                    onClick={() => placeGateAt(g.type, q, c)}
+                                    className={cn(
+                                      'p-1.5 rounded-xl border text-center font-mono font-black text-xs hover:scale-105 transition-all cursor-pointer bg-white',
+                                      style.border,
+                                      style.text,
+                                      'hover:bg-[#DBD4FF]'
+                                    )}
+                                    title={g.desc}
+                                  >
+                                    {g.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
                         )}
                       </div>
                     );
@@ -238,3 +367,5 @@ export const CircuitBuilder: React.FC = () => {
     </div>
   );
 };
+
+

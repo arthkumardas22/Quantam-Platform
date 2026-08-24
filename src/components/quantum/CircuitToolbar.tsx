@@ -5,6 +5,7 @@ import { useQuantum } from '@/context/QuantumContext';
 import { useUser } from '@/context/UserContext';
 import { PRESET_CIRCUITS } from '@/lib/presets';
 import { Button } from '@/components/ui/Button';
+import { InteractiveTutorialModal } from '@/components/ui/InteractiveTutorialModal';
 import {
   Play,
   RotateCcw,
@@ -18,6 +19,8 @@ import {
   Share2,
   Cpu,
   Trash2,
+  Compass,
+  Lightbulb,
 } from 'lucide-react';
 
 export const CircuitToolbar: React.FC = () => {
@@ -38,6 +41,7 @@ export const CircuitToolbar: React.FC = () => {
 
   const { showToast, incrementSimulationCount } = useUser();
   const [selectedPresetId, setSelectedPresetId] = useState('');
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
 
   const handlePresetSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
@@ -82,116 +86,139 @@ export const CircuitToolbar: React.FC = () => {
   };
 
   return (
-    <div className="h-12 bg-white border-b border-slate-200 px-4 flex items-center justify-between gap-3 shrink-0 select-none overflow-x-auto shadow-sm">
-      {/* Left controls: Presets & Grid dimensions */}
-      <div className="flex items-center gap-2.5">
-        {/* Preset Selector */}
-        <div className="flex items-center gap-1.5">
-          <BookOpen className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
-          <select
-            value={selectedPresetId}
-            onChange={handlePresetSelect}
-            className="text-xs bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-1 text-slate-800 font-semibold focus:outline-none focus:border-cyan-600 transition-colors shadow-inner"
+    <>
+      <div className="h-auto min-h-12 py-1.5 bg-[#FFFFE3] border-b border-[#DBD4FF] px-2.5 sm:px-4 flex items-center justify-between gap-2 shrink-0 select-none overflow-x-auto shadow-xs">
+        {/* Left controls: Presets & Grid dimensions */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Preset Selector */}
+          <div className="flex items-center gap-1">
+            <BookOpen className="w-3.5 h-3.5 text-[#723480] shrink-0 hidden xs:block" />
+            <select
+              value={selectedPresetId}
+              onChange={handlePresetSelect}
+              className="text-xs bg-white border border-[#DBD4FF] rounded-xl px-2 py-1 text-[#723480] font-bold focus:outline-none focus:border-[#531D5E] hover:border-[#531D5E] transition-colors shadow-inner cursor-pointer max-w-[130px] sm:max-w-[180px] md:max-w-none truncate"
+            >
+              <option value="">Load Preset...</option>
+              {PRESET_CIRCUITS.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} ({p.qubits}Q)
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="h-4 w-[1px] bg-[#DBD4FF] hidden sm:block" />
+
+          {/* Qubit count adjustments */}
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-white border border-[#DBD4FF] px-1.5 sm:px-2 py-0.5 rounded-xl text-xs shadow-inner">
+            <span className="text-[10px] sm:text-[11px] text-[#808034] font-mono font-bold">Q:</span>
+            <button
+              onClick={() => setNumQubits(circuit.numQubits - 1)}
+              disabled={circuit.numQubits <= 1}
+              className="p-0.5 sm:p-1 text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF] rounded-md disabled:opacity-30 transition-colors cursor-pointer"
+            >
+              <Minus className="w-3 h-3" />
+            </button>
+            <span className="font-mono font-bold text-[#723480] px-0.5 sm:px-1">{circuit.numQubits}</span>
+            <button
+              onClick={() => setNumQubits(circuit.numQubits + 1)}
+              disabled={circuit.numQubits >= 6}
+              className="p-0.5 sm:p-1 text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF] rounded-md disabled:opacity-30 transition-colors cursor-pointer"
+            >
+              <Plus className="w-3 h-3" />
+            </button>
+          </div>
+
+          {/* Time Steps adjustments */}
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-white border border-[#DBD4FF] px-1.5 sm:px-2 py-0.5 rounded-xl text-xs shadow-inner">
+            <span className="text-[10px] sm:text-[11px] text-[#808034] font-mono font-bold">Steps:</span>
+            <button
+              onClick={() => setNumColumns(circuit.numColumns - 1)}
+              disabled={circuit.numColumns <= 4}
+              className="p-0.5 sm:p-1 text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF] rounded-md disabled:opacity-30 transition-colors cursor-pointer"
+            >
+              <Minus className="w-3 h-3" />
+            </button>
+            <span className="font-mono font-bold text-[#723480] px-0.5 sm:px-1">{circuit.numColumns}</span>
+            <button
+              onClick={() => setNumColumns(circuit.numColumns + 1)}
+              disabled={circuit.numColumns >= 16}
+              className="p-0.5 sm:p-1 text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF] rounded-md disabled:opacity-30 transition-colors cursor-pointer"
+            >
+              <Plus className="w-3 h-3" />
+            </button>
+          </div>
+
+          <div className="h-4 w-[1px] bg-[#DBD4FF] hidden md:block" />
+
+          {/* Quick Guide Trigger */}
+          <button
+            onClick={() => setIsTutorialOpen(true)}
+            className="hidden md:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#DBD4FF] hover:bg-[#531D5E] text-[#723480] hover:text-[#FFFFE3] text-xs font-bold border border-[#723480]/40 hover:border-[#531D5E] transition-all shadow-xs cursor-pointer"
+            title="Open Interactive Quantum Guide"
           >
-            <option value="">Load Preset Algorithm...</option>
-            {PRESET_CIRCUITS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} ({p.qubits}Q)
-              </option>
-            ))}
-          </select>
+            <Lightbulb className="w-3.5 h-3.5 text-[#723480] group-hover:text-[#FFFFE3]" />
+            <span>Guide</span>
+          </button>
         </div>
 
-        <div className="h-4 w-[1px] bg-slate-200" />
+        {/* Center/Right controls */}
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            title="Undo (Ctrl+Z)"
+            className="p-1 sm:p-1.5 text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF] rounded-lg disabled:opacity-30 transition-colors cursor-pointer"
+          >
+            <Undo2 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            title="Redo (Ctrl+Y)"
+            className="p-1 sm:p-1.5 text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF] rounded-lg disabled:opacity-30 transition-colors cursor-pointer"
+          >
+            <Redo2 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+          </button>
+          <button
+            onClick={clearCircuit}
+            title="Clear all gates"
+            className="p-1 sm:p-1.5 text-[#723480] hover:text-[#FFFFE3] hover:bg-[#531D5E] rounded-lg transition-colors cursor-pointer"
+          >
+            <Trash2 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+          </button>
 
-        {/* Qubit count adjustments */}
-        <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-xl text-xs shadow-inner">
-          <span className="text-[11px] text-slate-500 font-mono font-medium">Qubits:</span>
-          <button
-            onClick={() => setNumQubits(circuit.numQubits - 1)}
-            disabled={circuit.numQubits <= 1}
-            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
-          >
-            <Minus className="w-3 h-3" />
-          </button>
-          <span className="font-mono font-bold text-cyan-700 px-1">{circuit.numQubits}</span>
-          <button
-            onClick={() => setNumQubits(circuit.numQubits + 1)}
-            disabled={circuit.numQubits >= 6}
-            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
-          >
-            <Plus className="w-3 h-3" />
-          </button>
-        </div>
+          <div className="h-4 w-[1px] bg-[#DBD4FF] hidden xs:block" />
 
-        {/* Time Steps adjustments */}
-        <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-xl text-xs shadow-inner">
-          <span className="text-[11px] text-slate-500 font-mono font-medium">Steps:</span>
           <button
-            onClick={() => setNumColumns(circuit.numColumns - 1)}
-            disabled={circuit.numColumns <= 4}
-            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+            onClick={handleExportJSON}
+            title="Export Circuit JSON"
+            className="p-1 sm:p-1.5 text-[#723480] hover:text-[#531D5E] hover:bg-[#DBD4FF] rounded-lg transition-colors cursor-pointer hidden xs:block"
           >
-            <Minus className="w-3 h-3" />
+            <Download className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
           </button>
-          <span className="font-mono font-bold text-indigo-700 px-1">{circuit.numColumns}</span>
-          <button
-            onClick={() => setNumColumns(circuit.numColumns + 1)}
-            disabled={circuit.numColumns >= 16}
-            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+
+          {/* Primary Run Simulation Button */}
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={handleRunClick}
+            isLoading={isSimulating}
+            leftIcon={<Play className="w-3.5 h-3.5 fill-current" />}
+            className="text-xs px-2.5 sm:px-3 py-1 sm:py-1.5"
           >
-            <Plus className="w-3 h-3" />
-          </button>
+            <span className="hidden sm:inline">Run Simulation</span>
+            <span className="sm:hidden">Run</span>
+          </Button>
         </div>
       </div>
 
-      {/* Center/Right controls: Undo/Redo, Clear, Run Simulation */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={undo}
-          disabled={!canUndo}
-          title="Undo (Ctrl+Z)"
-          className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg disabled:opacity-30 transition-colors"
-        >
-          <Undo2 className="w-4 h-4" />
-        </button>
-        <button
-          onClick={redo}
-          disabled={!canRedo}
-          title="Redo (Ctrl+Y)"
-          className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg disabled:opacity-30 transition-colors"
-        >
-          <Redo2 className="w-4 h-4" />
-        </button>
-        <button
-          onClick={clearCircuit}
-          title="Clear all gates"
-          className="p-1.5 text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-
-        <div className="h-4 w-[1px] bg-slate-200" />
-
-        <button
-          onClick={handleExportJSON}
-          title="Export Circuit JSON"
-          className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-        >
-          <Download className="w-4 h-4" />
-        </button>
-
-        {/* Primary Run Simulation Button */}
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={handleRunClick}
-          isLoading={isSimulating}
-          leftIcon={<Play className="w-3.5 h-3.5 fill-current" />}
-        >
-          Run Simulation
-        </Button>
-      </div>
-    </div>
+      {/* Tutorial Modal */}
+      <InteractiveTutorialModal
+        isOpen={isTutorialOpen}
+        onClose={() => setIsTutorialOpen(false)}
+      />
+    </>
   );
 };
+

@@ -39,7 +39,7 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
         onClick={handleClick}
         className="relative z-10 w-9 h-9 flex items-center justify-center cursor-pointer group"
       >
-        <div className="w-4 h-4 rounded-full bg-emerald-600 border-2 border-white shadow-md group-hover:scale-125 transition-transform" />
+        <div className="w-4 h-4 rounded-full bg-[#531D5E] border-2 border-white shadow-xs group-hover:scale-125 transition-transform" />
       </div>
     );
   }
@@ -50,16 +50,19 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
       <div
         onClick={handleClick}
         className={cn(
-          'relative z-10 w-9 h-9 rounded-full bg-white border-2 border-emerald-600 flex items-center justify-center cursor-pointer group shadow-md',
-          isSelected && 'ring-2 ring-cyan-500 ring-offset-2 ring-offset-white'
+          'relative z-10 w-9 h-9 rounded-full bg-white border-2 border-[#531D5E] flex items-center justify-center cursor-pointer group shadow-xs',
+          isSelected && 'ring-2 ring-[#531D5E] ring-offset-2 ring-offset-white'
         )}
       >
-        <span className="text-emerald-700 font-bold text-lg leading-none select-none">⊕</span>
+        <span className="text-[#531D5E] font-black text-lg leading-none select-none">⊕</span>
         <button
           onClick={handleDelete}
-          className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-20"
+          className={cn(
+            'absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center transition-opacity shadow-xs z-20 cursor-pointer',
+            isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+          )}
         >
-          <CloseIcon className="w-2.5 h-2.5" />
+          <CloseIcon className="w-3 h-3" />
         </button>
       </div>
     );
@@ -72,15 +75,18 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
         onClick={handleClick}
         className={cn(
           'relative z-10 w-9 h-9 flex items-center justify-center cursor-pointer group',
-          isSelected && 'ring-2 ring-cyan-500 rounded-full'
+          isSelected && 'ring-2 ring-[#531D5E] rounded-full'
         )}
       >
-        <div className="w-4 h-4 rounded-full bg-emerald-600 border-2 border-white shadow-md group-hover:scale-125 transition-transform" />
+        <div className="w-4 h-4 rounded-full bg-[#531D5E] border-2 border-white shadow-xs group-hover:scale-125 transition-transform" />
         <button
           onClick={handleDelete}
-          className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-20"
+          className={cn(
+            'absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center transition-opacity shadow-xs z-20 cursor-pointer',
+            isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+          )}
         >
-          <CloseIcon className="w-2.5 h-2.5" />
+          <CloseIcon className="w-3 h-3" />
         </button>
       </div>
     );
@@ -92,17 +98,20 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
       <div
         onClick={handleClick}
         className={cn(
-          'relative z-10 w-9 h-9 rounded-xl bg-white border-2 border-teal-500 flex items-center justify-center cursor-pointer group shadow-md',
-          isSelected && 'ring-2 ring-cyan-500 ring-offset-2 ring-offset-white'
+          'relative z-10 w-9 h-9 rounded-xl bg-white border-2 border-[#808034] flex items-center justify-center cursor-pointer group shadow-xs',
+          isSelected && 'ring-2 ring-[#531D5E] ring-offset-2 ring-offset-white'
         )}
       >
-        <span className="text-teal-700 font-bold text-sm select-none">✕</span>
+        <span className="text-[#808034] font-black text-sm select-none">✕</span>
         {isTarget && (
           <button
             onClick={handleDelete}
-            className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-20"
+            className={cn(
+              'absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center transition-opacity shadow-xs z-20 cursor-pointer',
+              isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            )}
           >
-            <CloseIcon className="w-2.5 h-2.5" />
+            <CloseIcon className="w-3 h-3" />
           </button>
         )}
       </div>
@@ -115,17 +124,20 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
       <div
         onClick={handleClick}
         className={cn(
-          'relative z-10 w-9 h-9 rounded-xl bg-amber-50 border-2 border-amber-500 flex flex-col items-center justify-center cursor-pointer group shadow-md',
-          isSelected && 'ring-2 ring-cyan-500 ring-offset-2 ring-offset-white'
+          'relative z-10 w-9 h-9 rounded-xl bg-[#DBD4FF] border-2 border-[#531D5E] flex flex-col items-center justify-center cursor-pointer group shadow-xs',
+          isSelected && 'ring-2 ring-[#531D5E] ring-offset-2 ring-offset-white'
         )}
       >
-        <Gauge className="w-4 h-4 text-amber-700" />
-        <span className="text-[9px] font-mono text-amber-800 font-bold">M</span>
+        <Gauge className="w-4 h-4 text-[#531D5E]" />
+        <span className="text-[9px] font-mono text-[#531D5E] font-bold">M</span>
         <button
           onClick={handleDelete}
-          className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-20"
+          className={cn(
+            'absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center transition-opacity shadow-xs z-20 cursor-pointer',
+            isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+          )}
         >
-          <CloseIcon className="w-2.5 h-2.5" />
+          <CloseIcon className="w-3 h-3" />
         </button>
       </div>
     );
@@ -138,12 +150,15 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
         onClick={handleClick}
         className="relative z-10 w-9 h-12 flex items-center justify-center cursor-pointer group"
       >
-        <div className="w-1.5 h-12 bg-slate-400 border border-slate-300 rounded-full border-dashed shadow-sm" />
+        <div className="w-1.5 h-12 bg-[#808034] border border-[#808034]/60 rounded-full border-dashed shadow-2xs" />
         <button
           onClick={handleDelete}
-          className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-20"
+          className={cn(
+            'absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center transition-opacity shadow-xs z-20 cursor-pointer',
+            isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+          )}
         >
-          <CloseIcon className="w-2.5 h-2.5" />
+          <CloseIcon className="w-3 h-3" />
         </button>
       </div>
     );
@@ -154,10 +169,10 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
     <div
       onClick={handleClick}
       className={cn(
-        'relative z-10 w-9 h-9 rounded-xl border-2 flex flex-col items-center justify-center cursor-pointer group transition-transform select-none shadow-sm backdrop-blur-md bg-white',
+        'relative z-10 w-9 h-9 rounded-xl border-2 flex flex-col items-center justify-center cursor-pointer group transition-transform select-none shadow-xs backdrop-blur-md bg-white',
         style.border,
         isSelected
-          ? 'ring-2 ring-cyan-500 ring-offset-2 ring-offset-white scale-105 shadow-md font-bold'
+          ? 'ring-2 ring-[#531D5E] ring-offset-2 ring-offset-white scale-105 shadow-md font-bold'
           : 'hover:scale-105'
       )}
     >
@@ -167,7 +182,7 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
 
       {/* Rotation parameter display */}
       {gate.parameter !== undefined && (
-        <span className="text-[8px] font-mono text-cyan-700 leading-none mt-0.5 font-bold">
+        <span className="text-[8px] font-mono text-[#531D5E] leading-none mt-0.5 font-bold">
           {(gate.parameter / Math.PI).toFixed(2)}π
         </span>
       )}
@@ -176,20 +191,23 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
       <button
         onClick={handleDelete}
         title="Delete Gate"
-        className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-20"
+        className={cn(
+          'absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition-opacity shadow-xs z-20 cursor-pointer',
+          isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+        )}
       >
-        <CloseIcon className="w-2.5 h-2.5" />
+        <CloseIcon className="w-3 h-3" />
       </button>
 
       {/* Parameter adjuster mini-panel if selected */}
       {isSelected && gate.parameter !== undefined && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-11 left-1/2 -translate-x-1/2 z-30 p-3 rounded-2xl bg-white border border-slate-200 shadow-2xl w-48 flex flex-col gap-1.5"
+          className="absolute top-11 left-1/2 -translate-x-1/2 z-30 p-3 rounded-2xl bg-white border-2 border-[#DBD4FF] shadow-2xl w-48 flex flex-col gap-1.5"
         >
-          <div className="flex justify-between items-center text-[10px] text-slate-600 font-semibold">
+          <div className="flex justify-between items-center text-[10px] text-[#723480] font-bold">
             <span>Rotation Angle θ</span>
-            <span className="font-mono text-cyan-700 font-bold">
+            <span className="font-mono text-[#531D5E] font-black">
               {(gate.parameter / Math.PI).toFixed(2)}π
             </span>
           </div>
@@ -200,10 +218,11 @@ export const GateNode: React.FC<GateNodeProps> = ({ gate, qubitIndex }) => {
             step={Math.PI / 12}
             value={gate.parameter}
             onChange={(e) => updateGate(gate.id, { parameter: parseFloat(e.target.value) })}
-            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-600"
+            className="w-full h-1.5 bg-[#DBD4FF] rounded-lg appearance-none cursor-pointer accent-[#531D5E]"
           />
         </div>
       )}
     </div>
   );
 };
+

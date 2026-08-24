@@ -35,67 +35,67 @@ export default function ProgressPage() {
 
   const skillsData = [
     { skill: 'Qubits & States', mastery: 95 },
-    { skill: 'Single-Qubit Rotations', mastery: 85 },
-    { skill: 'Entanglement & Bell States', mastery: 75 },
-    { skill: 'Quantum Search (Grover)', mastery: 65 },
-    { skill: 'Quantum Fourier Transform', mastery: 40 },
-    { skill: 'Quantum Cryptography & Shor', mastery: 30 },
+    { skill: 'Rotations & Gates', mastery: 85 },
+    { skill: 'Entanglement & Bell', mastery: 75 },
+    { skill: 'Grover Search', mastery: 65 },
+    { skill: 'Quantum Fourier', mastery: 40 },
+    { skill: 'Shor Factoring', mastery: 30 },
   ];
 
   return (
     <AppShell>
-      <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
+      <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6 sm:space-y-8 text-[#723480]">
         {/* Header Hero */}
-        <div className="p-8 rounded-3xl bg-gradient-to-r from-cyan-50 via-white to-purple-50 border border-cyan-200 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="p-5 sm:p-8 rounded-3xl bg-[#FFFFE3] border-2 border-[#DBD4FF] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-100 border border-cyan-300 text-xs font-bold text-cyan-800 mb-3 shadow-xs">
-              <Award className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#DBD4FF] border border-[#723480]/30 text-xs font-bold text-[#723480] mb-3 shadow-xs">
+              <Award className="w-4 h-4 text-[#723480]" />
               <span>Quantum Scholar Progress Matrix</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-slate-900">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#531D5E]">
               Level {progress.level} Quantum Architect
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            <p className="text-xs sm:text-sm text-[#808034] font-bold mt-1">
               You have completed {progress.completedLessonIds.length} lesson modules and simulated {progress.simulationsRun} circuits.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-center gap-4 shrink-0 shadow-sm">
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-white border-2 border-[#DBD4FF] flex items-center gap-4 shrink-0 shadow-xs">
             <div className="text-right">
-              <div className="text-xs text-slate-500 font-medium">Total XP Earned</div>
-              <div className="text-2xl font-extrabold font-mono text-cyan-700">
+              <div className="text-xs text-[#808034] font-bold">Total XP Earned</div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-[#531D5E]">
                 {progress.currentXp} / {progress.nextLevelXp}
               </div>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md shadow-cyan-600/20">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#531D5E] flex items-center justify-center font-black text-[#FFFFE3] shadow-md shadow-[#531D5E]/30">
               {progress.level}
             </div>
           </div>
         </div>
 
         {/* Skill Mastery Grid & Weekly Analytics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
           {/* Skill Mastery Chart */}
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#DBD4FF] shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-slate-800">Quantum Competency Matrix</h3>
-                <p className="text-xs text-slate-500">Skill mastery scores across core domains</p>
+                <h3 className="text-sm font-black text-[#531D5E]">Competency Matrix</h3>
+                <p className="text-xs text-[#808034] font-bold">Skill mastery across domains</p>
               </div>
-              <Badge variant="cyan">Avg: 65%</Badge>
+              <Badge variant="plum">Avg: 65%</Badge>
             </div>
 
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={skillsData} layout="vertical" margin={{ top: 10, right: 30, left: 40, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-                  <XAxis type="number" domain={[0, 100]} stroke="#64748b" tick={{ fill: '#475569', fontSize: 11 }} unit="%" />
-                  <YAxis type="category" dataKey="skill" stroke="#64748b" tick={{ fill: '#334155', fontSize: 10 }} width={120} />
+                <BarChart data={skillsData} layout="vertical" margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffe3" horizontal={false} />
+                  <XAxis type="number" domain={[0, 100]} stroke="#808034" tick={{ fill: '#723480', fontSize: 11 }} unit="%" />
+                  <YAxis type="category" dataKey="skill" stroke="#808034" tick={{ fill: '#531D5E', fontSize: 10, fontWeight: 700 }} width={110} />
                   <Tooltip
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         return (
-                          <div className="bg-white border border-slate-200 p-2.5 rounded-xl shadow-xl font-mono text-xs text-cyan-800 font-bold">
+                          <div className="bg-white border border-[#DBD4FF] p-2.5 rounded-xl shadow-xl font-mono text-xs text-[#531D5E] font-black">
                             {payload[0].payload.skill}: {payload[0].payload.mastery}% Mastery
                           </div>
                         );
@@ -107,7 +107,7 @@ export default function ProgressPage() {
                     {skillsData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
-                        fill={entry.mastery > 70 ? '#0891b2' : entry.mastery > 50 ? '#9333ea' : '#94a3b8'}
+                        fill={entry.mastery > 70 ? '#531D5E' : entry.mastery > 50 ? '#723480' : '#808034'}
                       />
                     ))}
                   </Bar>
@@ -117,41 +117,41 @@ export default function ProgressPage() {
           </div>
 
           {/* Achievement Badges Showcase */}
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#DBD4FF] shadow-xs space-y-4">
             <div>
-              <h3 className="text-sm font-bold text-slate-800">Quantum Achievement Badges</h3>
-              <p className="text-xs text-slate-500">Milestones unlocked during your quantum journey</p>
+              <h3 className="text-sm font-black text-[#531D5E]">Achievement Badges</h3>
+              <p className="text-xs text-[#808034] font-bold">Milestones unlocked during your journey</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
               {progress.badges.map((badge) => {
                 const isUnlocked = Boolean(badge.unlockedAt);
 
                 return (
                   <div
                     key={badge.id}
-                    className={`p-4 rounded-2xl border transition-all shadow-2xs ${
+                    className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all shadow-2xs ${
                       isUnlocked
-                        ? 'bg-gradient-to-br from-cyan-50 to-purple-50 border-cyan-200'
-                        : 'bg-slate-50 border-slate-200 opacity-50'
+                        ? 'bg-[#FFFFE3] border-[#DBD4FF]'
+                        : 'bg-white border-[#DBD4FF]/40 opacity-50'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div
                         className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                          isUnlocked ? 'bg-cyan-100 text-cyan-700' : 'bg-slate-200 text-slate-400'
+                          isUnlocked ? 'bg-[#DBD4FF] text-[#531D5E]' : 'bg-[#DBD4FF]/40 text-[#723480]/50'
                         }`}
                       >
                         {isUnlocked ? <Trophy className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                       </div>
                       {isUnlocked && (
-                        <span className="text-[10px] font-mono text-cyan-700 font-bold">
+                        <span className="text-[10px] font-mono text-[#808034] font-bold">
                           {badge.unlockedAt}
                         </span>
                       )}
                     </div>
-                    <h4 className="text-xs font-bold text-slate-800">{badge.name}</h4>
-                    <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                    <h4 className="text-xs font-black text-[#723480]">{badge.name}</h4>
+                    <p className="text-[11px] text-[#723480]/80 mt-0.5 leading-relaxed font-normal">
                       {badge.description}
                     </p>
                   </div>
@@ -162,22 +162,22 @@ export default function ProgressPage() {
         </div>
 
         {/* Certificate Eligibility Banner */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-50 via-white to-cyan-50 border border-purple-200 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 border border-purple-200 flex items-center justify-center shrink-0 shadow-xs">
+        <div className="p-5 sm:p-6 rounded-3xl bg-[#FFFFE3] border-2 border-[#DBD4FF] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center gap-3.5 sm:gap-4">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#DBD4FF] text-[#531D5E] border border-[#531D5E]/30 flex items-center justify-center shrink-0 shadow-xs">
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900">
-                Quantum Computing Practitioner Certificate
+              <h4 className="text-sm font-black text-[#531D5E]">
+                Practitioner Certificate
               </h4>
-              <p className="text-xs text-slate-600 mt-0.5">
+              <p className="text-xs text-[#808034] font-bold mt-0.5">
                 Complete 1 more challenge to unlock verified certification.
               </p>
             </div>
           </div>
 
-          <Button variant="quantum" size="md">
+          <Button variant="primary" size="md" className="w-full sm:w-auto">
             View Certificate Progress
           </Button>
         </div>
@@ -185,3 +185,4 @@ export default function ProgressPage() {
     </AppShell>
   );
 }
+

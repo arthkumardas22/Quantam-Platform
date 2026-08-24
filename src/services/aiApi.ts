@@ -20,8 +20,18 @@ export interface CircuitExplanationReport {
 }
 
 export async function explainCircuit(circuit: CircuitState): Promise<CircuitExplanationReport> {
-  // Artificial realistic processing delay
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  // Try backend endpoint first
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/ai/explain', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ circuit }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.data) return data.data;
+    }
+  } catch {}
 
   if (circuit.gates.length === 0) {
     return {
@@ -51,13 +61,10 @@ export async function explainCircuit(circuit: CircuitState): Promise<CircuitExpl
 
   const hasH = circuit.gates.some((g) => g.type === 'H');
   const hasCNOT = circuit.gates.some((g) => g.type === 'CNOT' || g.type === 'CZ');
-  const hasMeasure = circuit.gates.some((g) => g.type === 'M');
 
-  // Check if multiple non-zero basis states exist (superposition)
   const nonZeroAmplitudes = stateVector.amplitudes.filter((a) => a.probability > 0.01);
   const hasSuperposition = nonZeroAmplitudes.length > 1;
 
-  // Determine entanglement heuristic: multi-qubit with non-separable states (e.g. 00 and 11 only)
   let isEntangled = false;
   if (circuit.numQubits >= 2 && hasCNOT) {
     const keys = Object.keys(probabilities);
@@ -68,7 +75,6 @@ export async function explainCircuit(circuit: CircuitState): Promise<CircuitExpl
     }
   }
 
-  // Construct step-by-step breakdown
   const maxCol = Math.max(...circuit.gates.map((g) => g.column), 0);
   const stepByStep = [];
 
@@ -109,7 +115,6 @@ export async function explainCircuit(circuit: CircuitState): Promise<CircuitExpl
     });
   }
 
-  // Format Dirac notation
   const nonZeroTerms = nonZeroAmplitudes.map((a) => {
     const prob = (a.probability * 100).toFixed(1);
     return `√(${prob}%)|${a.basisState}⟩`;
@@ -155,43 +160,45 @@ export async function explainCircuit(circuit: CircuitState): Promise<CircuitExpl
 
 export async function askAITutor(
   prompt: string,
-  circuit: CircuitState,
-  chatHistory: ChatMessage[] = []
+  circuit?: CircuitState,
+  chatHistory: ChatMessage[] = [],
+  modelPreference: string = 'gemini-1.5-flash',
+  customApiKey?: string
 ): Promise<string> {
-  // Artificial realistic AI reasoning delay
-  await new Promise((resolve) => setTimeout(resolve, 550));
+  // Call backend AI proxy
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: prompt,
+        circuit,
+        history: chatHistory.map((m) => ({ role: m.role, content: m.content })),
+        modelPreference,
+        apiKey: customApiKey,
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.data?.message) return data.data.message;
+    }
+  } catch {}
 
+  // Fallback intelligent quantum reasoner
   const lower = prompt.toLowerCase();
-  const numGates = circuit.gates.length;
+  const numGates = circuit?.gates?.length || 0;
 
-  if (lower.includes('explain this circuit') || lower.includes('what does this circuit do')) {
-    const report = await explainCircuit(circuit);
-    return `### 🔬 Circuit Breakdown\n\n**${report.title}**\n\n${report.summary}\n\n**State Vector:**\n\`${report.theoreticalState}\`\n\n**Expected Measurement Outcomes:**\n${report.measurementOutcome}\n\n💡 **Key Quantum Insight:**\n${report.beginnerTrap}`;
-  }
-
-  if (lower.includes('hadamard') || lower.includes('why is h used') || lower.includes('what is h')) {
-    return `### ⚡ The Hadamard Gate ($H$)\n\nThe **Hadamard gate** is the fundamental building block of quantum parallelism. It transforms classical definite basis states into equal superpositions:\n\n$$H|0\\rangle = \\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = |+\\rangle$$\n$$H|1\\rangle = \\frac{|0\\rangle - |1\\rangle}{\\sqrt{2}} = |-\\rangle$$\n\n**Matrix Representation:**\n$$\\frac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}$$\n\n**Key Characteristics:**\n1. **Self-Inverse / Involutory:** Applying $H$ twice returns the state back to the original: $H \\cdot H = I$.\n2. **Equator on Bloch Sphere:** It rotates the $|0\\rangle$ state on the Z-axis to the $|+\\rangle$ state on the positive X-axis.`;
+  if (lower.includes('hadamard') || lower.includes('what is h')) {
+    return `### ⚡ The Hadamard Gate ($H$)\n\nThe **Hadamard gate** transforms computational basis states into symmetric superpositions:\n\n$$H|0\\rangle = \\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = |+\\rangle$$\n$$H|1\\rangle = \\frac{|0\\rangle - |1\\rangle}{\\sqrt{2}} = |-\\rangle$$\n\n**Unitary Matrix Representation:**\n$$H = \\frac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}$$\n\n**Key Characteristics:**\n1. **Involutory (Self-Inverse):** $H \\cdot H = I$.\n2. **Bloch Equator:** Rotates state $|0\\rangle$ directly to the $+X$ equator axis.\n3. **Python Qiskit:** \`qc.h(0)\``;
   }
 
   if (lower.includes('cnot') || lower.includes('cx') || lower.includes('entangle')) {
-    return `### 🔗 Controlled-NOT ($CNOT$ / $CX$)\n\nThe **CNOT gate** is a 2-qubit entangling gate that performs a bit-flip on the target qubit **if and only if** the control qubit is in state $|1\\rangle$.\n\n**Truth Table:**\n- $|00\\rangle \\rightarrow |00\\rangle$\n- $|01\\rangle \\rightarrow |01\\rangle$\n- $|10\\rangle \\rightarrow |11\\rangle$ *(target flipped)*\n- $|11\\rangle \\rightarrow |10\\rangle$ *(target flipped)*\n\nWhen combined with a Hadamard gate ($H$ on $q_0$ followed by $CNOT(q_0 \\rightarrow q_1)$), it produces the maximally entangled **Bell State**:\n$$|\\Phi^+\\rangle = \\frac{|00\\rangle + |11\\rangle}{\\sqrt{2}}$$\n\nIn this state, neither qubit possesses an independent state; measuring one immediately determines the other!`;
+    return `### 🔗 Controlled-NOT ($CNOT$ / $CX$)\n\nThe **CNOT gate** is a 2-qubit entangling gate that flips target qubit if and only if control qubit is $|1\\rangle$.\n\nWhen combined with a Hadamard gate ($H$ on $q_0$ followed by $CNOT(q_0 \\rightarrow q_1)$), it produces the maximally entangled **Bell State**:\n$$|\\Phi^+\\rangle = \\frac{|00\\rangle + |11\\rangle}{\\sqrt{2}}$$`;
   }
 
   if (lower.includes('grover') || lower.includes('search')) {
-    return `### 🔍 Grover's Search Algorithm\n\nGrover's algorithm provides a **quadratic quantum speedup** for unstructured database searches.\n\n- **Classical Complexity:** $\\mathcal{O}(N)$ brute-force queries\n- **Quantum Complexity:** $\\mathcal{O}(\\sqrt{N})$ queries\n\n**Main Stages:**\n1. **Superposition:** Initialize all qubits in equal superposition with Hadamard gates.\n2. **Oracle ($U_\\omega$):** Inverts the phase of the target marked state: $|x\\rangle \\rightarrow -|x\\rangle$.\n3. **Diffusion Operator ($U_s$):** Inverts all amplitudes around the average mean amplitude, amplifying the probability of the marked state.\n4. **Measurement:** Collapses to the correct answer with near $100\\%$ probability in $\\approx \\frac{\\pi}{4}\\sqrt{N}$ iterations.`;
+    return `### 🔍 Grover's Search Algorithm\n\nGrover's algorithm provides a **quadratic quantum speedup** for unstructured database searches:\n\n- **Classical Complexity:** $\\mathcal{O}(N)$\n- **Quantum Complexity:** $\\mathcal{O}(\\sqrt{N})$\n\n**Key Stages:**\n1. Uniform superposition via Hadamard gates.\n2. Phase Oracle ($U_\\omega$) marks target state.\n3. Grover Diffusion Operator ($U_s = 2|s\\rangle\\langle s| - I$) inverts amplitudes around the mean.`;
   }
 
-  if (lower.includes('bloch') || lower.includes('sphere')) {
-    return `### 🌐 The Bloch Sphere\n\nThe **Bloch Sphere** is a geometric representation of pure single-qubit states on the surface of a unit sphere:\n\n$$|\\psi\\rangle = \\cos\\left(\\frac{\\theta}{2}\\right)|0\\rangle + e^{i\\phi}\\sin\\left(\\frac{\\theta}{2}\\right)|1\\rangle$$\n\n- **North Pole ($\\theta = 0$):** Ground state $|0\\rangle$\n- **South Pole ($\\theta = \\pi$):** Excited state $|1\\rangle$\n- **Equator ($\\theta = \\pi/2$):** Superposition states (e.g. $|+\\rangle$ at $\\phi=0$, $|-\\rangle$ at $\\phi=\\pi$, $|+i\\rangle$ at $\\phi=\\pi/2$)\n\nTry rotating the 3D Bloch sphere in the right-hand panel of our Quantum Studio!`;
-  }
-
-  if (lower.includes('challenge') || lower.includes('quiz') || lower.includes('practice')) {
-    return `### 🎯 Quick Quantum Challenge for You!\n\n**Goal: Construct the Bell State $|\\Psi^-\\rangle$**\n\n$$\\frac{|01\\rangle - |10\\rangle}{\\sqrt{2}}$$\n\n**Hints:**\n1. Apply an **X gate** on $q_0$ and an **X gate** on $q_1$ (or start with $|01\\rangle$).\n2. Apply a **Hadamard gate** on $q_0$.\n3. Apply a **CNOT** with control $q_0$ and target $q_1$.\n4. Apply a **Z gate** on $q_0$ to introduce the relative minus sign.\n\nTry building it in the Quantum Studio workspace and check the probability chart!`;
-  }
-
-  if (lower.includes('measurement') || lower.includes('collapse') || lower.includes('what happens after')) {
-    return `### 💥 Quantum Measurement & Wavefunction Collapse\n\nIn quantum mechanics, measurement according to the **Born Rule** causes the quantum state $|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle$ to irreversibly collapse into one of the definite computational basis states:\n\n- Outcome $|0\\rangle$ with probability $P(0) = |\\alpha|^2$\n- Outcome $|1\\rangle$ with probability $P(1) = |\\beta|^2$\n\n**Crucial properties:**\n1. The measurement outcome is genuinely probabilistic.\n2. Once measured, all superposition and entanglement information in that basis is lost.\n3. The qubit remains in the collapsed state for any subsequent measurements.`;
-  }
-
-  return `### ⚛️ Quantum Assistant Response\n\nRegarding **"${prompt}"**:\n\nIn quantum information processing, your current circuit with **${numGates} gate(s)** demonstrates key quantum computational principles.\n\nQuantum algorithms leverage **superposition** (evaluating combinations of inputs simultaneously), **phase kickback**, and **constructive/destructive interference** to amplify the amplitudes of correct solution states while canceling out incorrect ones.\n\n**Suggested next steps:**\n- Drag an **H gate** or **CNOT gate** to manipulate the quantum state.\n- Switch between **Qiskit Aer**, **Cirq**, and **PennyLane** in the simulation panel.\n- Inspect the **State Vector** tab to see exact complex amplitude phases $\\alpha e^{i\\phi}$.`;
+  return `### ⚛️ Quantum Assistant Response\n\nRegarding: **"${prompt}"**\n\nIn quantum information processing, your current circuit with **${numGates} gate(s)** demonstrates foundational quantum mechanical principles.\n\nQuantum algorithms leverage **superposition**, **phase kickback**, and **wave interference** to solve computational problems faster than classical Turing machines.\n\n**Suggested next steps:**\n- Drag an **H gate** or **CNOT gate** onto the circuit wires.\n- Check the **3D Bloch Sphere** for real-time statevector visual rotations.`;
 }

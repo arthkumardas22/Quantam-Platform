@@ -70,15 +70,15 @@ export const GeneratedCodePanel: React.FC = () => {
   return (
     <div className="flex-1 flex flex-col h-full bg-[#0f172a] border-t border-slate-200 font-mono text-xs overflow-hidden">
       {/* Code Header Bar */}
-      <div className="h-10 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between select-none shrink-0">
-        <div className="flex items-center gap-1.5 overflow-x-auto">
-          <Code2 className="w-3.5 h-3.5 text-cyan-400 mr-1 shrink-0" />
+      <div className="h-10 bg-slate-900 border-b border-slate-800 px-2.5 sm:px-4 flex items-center justify-between select-none shrink-0 gap-2 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <Code2 className="w-3.5 h-3.5 text-cyan-400 mr-1 shrink-0 hidden xs:block" />
           {languages.map((lang) => (
             <button
               key={lang.id}
               onClick={() => setActiveCodeLanguage(lang.id as any)}
               className={cn(
-                'px-2.5 py-1 text-[11px] rounded-lg transition-all font-medium whitespace-nowrap',
+                'px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] rounded-lg transition-all font-medium whitespace-nowrap cursor-pointer',
                 activeCodeLanguage === lang.id
                   ? 'bg-slate-800 text-cyan-300 border border-slate-700 font-bold shadow-sm'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
@@ -89,10 +89,10 @@ export const GeneratedCodePanel: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] transition-colors"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[10px] sm:text-[11px] transition-colors cursor-pointer"
           >
             {isCopied ? (
               <>
@@ -109,7 +109,7 @@ export const GeneratedCodePanel: React.FC = () => {
 
           <button
             onClick={handleDownload}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] transition-colors"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[10px] sm:text-[11px] transition-colors cursor-pointer hidden xs:flex"
           >
             <Download className="w-3 h-3 text-slate-400" />
             <span>Export</span>

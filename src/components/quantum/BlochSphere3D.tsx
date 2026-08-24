@@ -25,18 +25,32 @@ export const BlochSphere3D: React.FC = () => {
     const container = containerRef.current;
 
     const width = container.clientWidth || 320;
-    const height = container.clientHeight || 320;
+    const height = container.clientHeight || 280;
 
     // Three.js Scene Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(3.2, 2.2, 3.8);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.touchAction = 'none';
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
+
+    const updateSize = () => {
+      if (!container) return;
+      const w = container.clientWidth || 300;
+      const h = container.clientHeight || 260;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    };
+
+    updateSize();
 
     // Group for entire rotatable sphere
     const sphereGroup = new THREE.Group();
@@ -143,7 +157,7 @@ export const BlochSphere3D: React.FC = () => {
 
     camera.lookAt(0, 0, 0);
 
-    // Orbital drag interaction
+    // Orbital drag interaction (Mouse & Touch)
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
 
@@ -167,6 +181,30 @@ export const BlochSphere3D: React.FC = () => {
       isDragging = false;
     };
 
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      if (e.cancelable) e.preventDefault();
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - previousMousePosition.x;
+      const deltaY = touch.clientY - previousMousePosition.y;
+
+      sphereGroup.rotation.y += deltaX * 0.015;
+      sphereGroup.rotation.x += deltaY * 0.015;
+
+      previousMousePosition = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const onTouchEnd = () => {
+      isDragging = false;
+    };
+
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       camera.position.z = Math.max(2.5, Math.min(7.0, camera.position.z + e.deltaY * 0.005));
@@ -175,6 +213,9 @@ export const BlochSphere3D: React.FC = () => {
     container.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+    container.addEventListener('touchstart', onTouchStart, { passive: false });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchend', onTouchEnd);
     container.addEventListener('wheel', onWheel);
 
     // Render loop
@@ -189,41 +230,50 @@ export const BlochSphere3D: React.FC = () => {
     animate();
 
     const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      updateSize();
     };
     window.addEventListener('resize', handleResize);
 
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        updateSize();
+      });
+      resizeObserver.observe(container);
+    }
+
     return () => {
       cancelAnimationFrame(animationId);
+      if (resizeObserver) resizeObserver.disconnect();
       container.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
       container.removeEventListener('wheel', onWheel);
       window.removeEventListener('resize', handleResize);
       renderer.dispose();
     };
+
   }, [blochCoords, selectedQubitForBloch]);
 
+
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-50 select-none overflow-hidden">
+    <div className="flex-1 flex flex-col h-full bg-[#FFFFE3]/40 select-none overflow-hidden text-[#723480]">
       {/* Qubit Selector Bar */}
-      <div className="p-3 border-b border-slate-200 flex items-center justify-between bg-white shadow-sm">
+      <div className="p-2.5 sm:p-3 border-b border-[#DBD4FF] flex items-center justify-between bg-white shadow-xs">
         <div className="flex items-center gap-1.5 overflow-x-auto">
-          <span className="text-[11px] text-slate-500 font-mono font-semibold mr-1">Qubit:</span>
+          <span className="text-[11px] text-[#808034] font-mono font-bold mr-1">Qubit:</span>
           {Array.from({ length: circuit.numQubits }).map((_, q) => (
             <button
               key={q}
               onClick={() => setSelectedQubitForBloch(q)}
               className={cn(
-                'px-2.5 py-1 text-xs font-mono font-bold rounded-xl transition-all shadow-sm',
+                'px-2.5 py-1 text-xs font-mono font-bold rounded-xl transition-all shadow-xs cursor-pointer',
                 selectedQubitForBloch === q
-                  ? 'bg-cyan-600 text-white shadow-cyan-600/30'
-                  : 'bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200'
+                  ? 'bg-[#531D5E] text-[#FFFFE3] shadow-md shadow-[#531D5E]/30'
+                  : 'bg-[#FFFFE3] text-[#723480] hover:bg-[#DBD4FF] border border-[#DBD4FF]'
               )}
             >
               q{q}
@@ -231,49 +281,51 @@ export const BlochSphere3D: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-mono">
-          <Compass className="w-3.5 h-3.5 text-cyan-600" />
-          <span>Drag to Rotate</span>
+        <div className="flex items-center gap-1.5 text-[10px] text-[#808034] font-mono font-bold">
+          <Compass className="w-3.5 h-3.5 text-[#723480]" />
+          <span className="hidden sm:inline">Drag / Touch to Rotate</span>
+          <span className="sm:hidden">Rotate 3D</span>
         </div>
       </div>
 
       {/* 3D Canvas Area */}
-      <div className="flex-1 relative min-h-[220px]">
+      <div className="flex-1 relative min-h-[220px] touch-none">
         <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
         {/* HUD Basis Pole Labels */}
-        <div className="absolute top-2 left-3 pointer-events-none text-[10px] font-mono space-y-0.5 bg-white/90 p-2 rounded-xl border border-slate-200 shadow-md backdrop-blur-sm">
-          <div className="text-purple-700 font-bold">|0⟩ (North Pole: +Z)</div>
-          <div className="text-purple-700 font-bold">|1⟩ (South Pole: -Z)</div>
-          <div className="text-cyan-700 font-semibold">|+⟩ / |-⟩ (Equator: ±X)</div>
-          <div className="text-emerald-700 font-semibold">|+i⟩ / |-i⟩ (Equator: ±Y)</div>
+        <div className="absolute top-2 left-2 sm:left-3 pointer-events-none text-[9px] sm:text-[10px] font-mono space-y-0.5 bg-white/95 p-2 rounded-xl border border-[#DBD4FF] shadow-md backdrop-blur-sm">
+          <div className="text-[#531D5E] font-black">|0⟩ (North: +Z)</div>
+          <div className="text-[#531D5E] font-black">|1⟩ (South: -Z)</div>
+          <div className="text-[#808034] font-bold">|+⟩ / |-⟩ (±X)</div>
+          <div className="text-[#723480] font-bold">|+i⟩ / |-i⟩ (±Y)</div>
         </div>
 
         {/* State Vector Indicator Overlay */}
-        <div className="absolute bottom-2 right-3 pointer-events-none text-right font-mono bg-white/95 p-2.5 rounded-2xl border border-slate-200 backdrop-blur-md shadow-lg">
-          <div className="text-xs font-bold text-rose-600 flex items-center justify-end gap-1">
-            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-            <span>State Vector |ψ⟩</span>
+        <div className="absolute bottom-2 right-2 sm:right-3 pointer-events-none text-right font-mono bg-white/95 p-2 sm:p-2.5 rounded-2xl border border-[#DBD4FF] backdrop-blur-md shadow-md">
+          <div className="text-[11px] sm:text-xs font-bold text-[#531D5E] flex items-center justify-end gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#531D5E] animate-pulse" />
+            <span>State |ψ⟩</span>
           </div>
-          <div className="text-[11px] text-slate-700 mt-1 font-semibold">
+          <div className="text-[10px] sm:text-[11px] text-[#808034] mt-0.5 font-bold">
             (x: {blochCoords.x.toFixed(2)}, y: {blochCoords.y.toFixed(2)}, z: {blochCoords.z.toFixed(2)})
           </div>
-          <div className="text-[10px] text-cyan-700 font-bold mt-0.5">
-            θ = {(blochCoords.theta / Math.PI).toFixed(2)}π, φ = {(blochCoords.phi / Math.PI).toFixed(2)}π
+          <div className="text-[9px] text-[#723480]/80">
+            θ: {(blochCoords.theta / Math.PI).toFixed(2)}π, φ: {(blochCoords.phi / Math.PI).toFixed(2)}π
           </div>
         </div>
       </div>
 
       {/* Mathematical Readout Footer */}
-      <div className="p-3 border-t border-slate-200 bg-white font-mono text-xs shadow-sm">
-        <div className="flex justify-between items-center text-slate-500 text-[11px] mb-1">
-          <span>Single Qubit Pure State Formalism</span>
-          <span className="text-cyan-700 font-bold">q{selectedQubitForBloch}</span>
+      <div className="p-2.5 sm:p-3 border-t border-[#DBD4FF] bg-white font-mono text-xs shadow-xs">
+        <div className="flex justify-between items-center text-[#808034] text-[11px] mb-1 font-bold">
+          <span>Pure State Formalism</span>
+          <span className="text-[#531D5E] font-black">q{selectedQubitForBloch}</span>
         </div>
-        <div className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-center font-semibold text-xs tracking-wide shadow-inner">
+        <div className="p-2 rounded-xl bg-[#FFFFE3] border border-[#DBD4FF] text-[#531D5E] text-center font-bold text-[11px] sm:text-xs tracking-wide shadow-inner overflow-x-auto">
           |ψ⟩ = cos({(blochCoords.theta / 2 / Math.PI).toFixed(2)}π)|0⟩ + e^(i·{(blochCoords.phi / Math.PI).toFixed(2)}π)sin({(blochCoords.theta / 2 / Math.PI).toFixed(2)}π)|1⟩
         </div>
       </div>
     </div>
   );
 };
+

@@ -41,34 +41,34 @@ export default function SettingsPage() {
 
   return (
     <AppShell>
-      <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-8">
+      <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto space-y-6 sm:space-y-8 text-[#723480]">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <Settings className="w-6 h-6 text-cyan-600" />
+          <h1 className="text-xl sm:text-2xl font-black text-[#531D5E] flex items-center gap-2.5">
+            <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-[#723480]" />
             <span>Platform & Simulator Settings</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-[#808034] font-bold mt-1">
             Configure default quantum execution backends, API credentials, and simulator precision
           </p>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6">
+        <form onSubmit={handleSave} className="space-y-5 sm:space-y-6">
           {/* Quantum Simulator Configuration */}
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-5">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-              <Cpu className="w-4 h-4 text-cyan-600" />
-              <h2 className="text-sm font-bold text-slate-800">Execution Backend & Engine</h2>
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#DBD4FF] shadow-xs space-y-4 sm:space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-[#DBD4FF]">
+              <Cpu className="w-4 h-4 text-[#723480]" />
+              <h2 className="text-sm font-black text-[#531D5E]">Execution Backend & Engine</h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-[#723480] mb-1.5">
                   Default Quantum Simulator
                 </label>
                 <select
                   value={backend}
                   onChange={(e) => setBackend(e.target.value as SimulatorBackend)}
-                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:border-cyan-600 shadow-inner"
+                  className="w-full text-xs bg-[#FFFFE3] border border-[#DBD4FF] rounded-xl px-3.5 py-2.5 text-[#531D5E] font-bold focus:outline-none focus:border-[#531D5E] shadow-inner cursor-pointer"
                 >
                   <option value="qiskit_aer">Qiskit Aer Simulator (Local GPU/CPU)</option>
                   <option value="cirq_simulator">Google Cirq DensityMatrix Simulator</option>
@@ -78,13 +78,13 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-[#723480] mb-1.5">
                   Default Shots Count
                 </label>
                 <select
                   value={shots}
                   onChange={(e) => setShots(Number(e.target.value))}
-                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:border-cyan-600 font-mono shadow-inner"
+                  className="w-full text-xs bg-[#FFFFE3] border border-[#DBD4FF] rounded-xl px-3.5 py-2.5 text-[#531D5E] font-bold focus:outline-none focus:border-[#531D5E] font-mono shadow-inner cursor-pointer"
                 >
                   <option value={100}>100 Shots (Fast testing)</option>
                   <option value={1024}>1024 Shots (Standard precision)</option>
@@ -95,12 +95,12 @@ export default function SettingsPage() {
             </div>
 
             {/* Noise Simulation Toggle */}
-            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs">
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FFFFE3] border border-[#DBD4FF] shadow-xs gap-3">
               <div>
-                <div className="text-xs font-semibold text-slate-800">
+                <div className="text-xs font-bold text-[#531D5E]">
                   Thermal Relaxation & Gate Noise Emulation
                 </div>
-                <div className="text-[11px] text-slate-500 mt-0.5">
+                <div className="text-[11px] text-[#808034] font-bold mt-0.5">
                   Simulate T1/T2 decoherence and depolarizing readout errors on physical qubits.
                 </div>
               </div>
@@ -108,21 +108,21 @@ export default function SettingsPage() {
                 type="checkbox"
                 checked={enableNoiseModel}
                 onChange={(e) => setEnableNoiseModel(e.target.checked)}
-                className="w-4 h-4 accent-cyan-600 rounded cursor-pointer"
+                className="w-4 h-4 accent-[#531D5E] rounded cursor-pointer shrink-0"
               />
             </div>
           </div>
 
           {/* API Credentials Configuration */}
-          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-5">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-              <Key className="w-4 h-4 text-purple-600" />
-              <h2 className="text-sm font-bold text-slate-800">External Cloud API Integrations</h2>
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#DBD4FF] shadow-xs space-y-4 sm:space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-[#DBD4FF]">
+              <Key className="w-4 h-4 text-[#723480]" />
+              <h2 className="text-sm font-black text-[#531D5E]">External Cloud API Integrations</h2>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-[#723480] mb-1.5">
                   IBM Quantum Experience API Token
                 </label>
                 <input
@@ -130,12 +130,12 @@ export default function SettingsPage() {
                   value={ibmToken}
                   onChange={(e) => setIbmToken(e.target.value)}
                   placeholder="Paste your IBM Quantum token here..."
-                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 focus:outline-none focus:border-purple-600 font-mono shadow-inner"
+                  className="w-full text-xs bg-[#FFFFE3] border border-[#DBD4FF] rounded-xl px-3.5 py-2.5 text-[#531D5E] focus:outline-none focus:border-[#531D5E] font-mono shadow-inner"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-[#723480] mb-1.5">
                   Quantum AI Assistant Provider Key (Gemini / Anthropic / OpenAI)
                 </label>
                 <input
@@ -143,19 +143,19 @@ export default function SettingsPage() {
                   value={aiApiKey}
                   onChange={(e) => setAiApiKey(e.target.value)}
                   placeholder="Paste your AI LLM API key here..."
-                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 focus:outline-none focus:border-purple-600 font-mono shadow-inner"
+                  className="w-full text-xs bg-[#FFFFE3] border border-[#DBD4FF] rounded-xl px-3.5 py-2.5 text-[#531D5E] focus:outline-none focus:border-[#531D5E] font-mono shadow-inner"
                 />
               </div>
             </div>
           </div>
 
           {/* Danger Zone: Reset Progress */}
-          <div className="p-6 rounded-3xl bg-rose-50 border border-rose-200 shadow-sm flex items-center justify-between">
+          <div className="p-4 sm:p-6 rounded-3xl bg-rose-50 border-2 border-rose-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div>
-              <h3 className="text-xs font-bold text-rose-900 uppercase tracking-wider">
+              <h3 className="text-xs font-black text-rose-900 uppercase tracking-wider">
                 Reset Learning Progress & Cache
               </h3>
-              <p className="text-xs text-slate-600 mt-0.5">
+              <p className="text-xs text-rose-700/80 mt-0.5">
                 Clears all local completed lesson checkpoints, earned XP, and saved circuit cache.
               </p>
             </div>
@@ -165,6 +165,7 @@ export default function SettingsPage() {
               size="sm"
               onClick={handleResetProgress}
               leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+              className="w-full sm:w-auto"
             >
               Reset Data
             </Button>
@@ -172,7 +173,7 @@ export default function SettingsPage() {
 
           {/* Submit Button */}
           <div className="flex justify-end">
-            <Button type="submit" variant="quantum" size="md" leftIcon={<Save className="w-4 h-4" />}>
+            <Button type="submit" variant="primary" size="md" className="w-full sm:w-auto" leftIcon={<Save className="w-4 h-4" />}>
               Save Preferences
             </Button>
           </div>
@@ -181,3 +182,4 @@ export default function SettingsPage() {
     </AppShell>
   );
 }
+
