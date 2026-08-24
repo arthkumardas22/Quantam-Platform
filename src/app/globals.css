@@ -155,3 +155,13 @@ code, kbd, samp, pre, .font-mono {
 .animate-spin-slow {
   animation: spinSlow 20s linear infinite;
 }
+
+/* Hide Next.js dev indicator badge */
+#__next-build-watcher,
+[data-nextjs-dev-indicator],
+[data-nextjs-toast],
+nextjs-portal,
+div[data-nextjs-toast-wrapper] {
+  display: none !important;
+}
+

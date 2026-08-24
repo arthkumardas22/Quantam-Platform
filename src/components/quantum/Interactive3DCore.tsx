@@ -495,18 +495,18 @@ export const Interactive3DCore: React.FC = () => {
       {/* Header Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#DBD4FF] pb-4 mb-4 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#09152B] flex items-center justify-center shadow-md shadow-[#09152B]/40 text-[#38BDF8] border border-[#38BDF8]/40">
-            <Sparkles className="w-5 h-5 text-[#38BDF8]" />
+          <div className="w-10 h-10 rounded-2xl bg-[#531D5E] flex items-center justify-center shadow-md shadow-[#531D5E]/30 text-[#FFFFE3] border border-[#DBD4FF]">
+            <Sparkles className="w-5 h-5 text-[#FFFFE3]" />
           </div>
           <div>
             <div className="text-base font-black tracking-tight text-[#723480] flex items-center gap-2">
               <span>Interactive 3D Quantum Qubit Core</span>
-              <span className="px-2.5 py-0.5 rounded-full bg-[#09152B] text-[#38BDF8] text-[11px] font-mono font-bold border border-[#38BDF8]/40 shadow-xs">
-                Obsidian Dark WebGL
+              <span className="px-2.5 py-0.5 rounded-full bg-[#DBD4FF] text-[#531D5E] text-[11px] font-mono font-bold border border-[#531D5E]/30 shadow-xs">
+                3D WebGL
               </span>
             </div>
             <div className="text-xs text-[#808034] font-bold">
-              Click quantum gates or drag angles to observe real-time 3D rotations on the dark Bloch sphere.
+              Click quantum gates or drag angles to observe real-time 3D rotations on the Bloch sphere.
             </div>
           </div>
         </div>
@@ -559,32 +559,33 @@ export const Interactive3DCore: React.FC = () => {
           <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing relative z-10" />
 
           {/* Drag Overlay Hint */}
-          <div className="absolute bottom-3 left-3 pointer-events-none flex items-center gap-1.5 text-xs text-[#38BDF8] bg-[#0A1226]/90 px-3 py-1.5 rounded-xl font-bold border border-[#38BDF8]/30 shadow-lg backdrop-blur-md z-20">
-            <Compass className="w-4 h-4 text-[#38BDF8]" />
+          <div className="absolute bottom-3 left-3 pointer-events-none flex items-center gap-1.5 text-xs text-[#531D5E] bg-[#FFFFE3]/95 px-3 py-1.5 rounded-xl font-bold border border-[#DBD4FF] shadow-lg backdrop-blur-md z-20">
+            <Compass className="w-4 h-4 text-[#723480]" />
             <span>Drag or move mouse to rotate</span>
           </div>
 
           {/* State Vector Badge */}
-          <div className="absolute top-3 right-3 pointer-events-none text-right bg-[#0A1226]/90 px-3.5 py-2 rounded-2xl border border-[#38BDF8]/40 shadow-xl backdrop-blur-md z-20">
-            <div className="text-[11px] text-[#38BDF8] font-mono font-bold flex items-center justify-end gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
+          <div className="absolute top-3 right-3 pointer-events-none text-right bg-[#FFFFE3]/95 px-3.5 py-2 rounded-2xl border border-[#DBD4FF] shadow-xl backdrop-blur-md z-20">
+            <div className="text-[11px] text-[#808034] font-mono font-bold flex items-center justify-end gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#531D5E] animate-pulse" />
               <span>State Vector |ψ⟩</span>
             </div>
-            <div className="text-sm font-black text-white font-mono mt-0.5">
+            <div className="text-sm font-black text-[#531D5E] font-mono mt-0.5">
               {measurementResult ? measurementResult : activePreset.name}
             </div>
           </div>
 
           {/* Basis Poles HUD */}
           {showAxesInfo && (
-            <div className="absolute top-3 left-3 bg-[#0A1226]/95 text-white p-3 rounded-2xl border border-[#38BDF8]/30 text-[11px] font-mono space-y-1 shadow-2xl backdrop-blur-md z-20">
-              <div className="font-bold text-white">|0⟩ = North Pole (+Z Axis)</div>
-              <div className="font-bold text-[#38BDF8]">|1⟩ = South Pole (-Z Axis)</div>
-              <div className="font-bold text-[#38BDF8]">|+⟩ = Superposition (+X Axis)</div>
-              <div className="font-bold text-[#818CF8]">|+i⟩ = Phase (+Y Axis)</div>
+            <div className="absolute top-3 left-3 bg-[#FFFFE3]/95 text-[#723480] p-3 rounded-2xl border border-[#DBD4FF] text-[11px] font-mono space-y-1 shadow-2xl backdrop-blur-md z-20">
+              <div className="font-bold text-[#531D5E]">|0⟩ = North Pole (+Z Axis)</div>
+              <div className="font-bold text-[#531D5E]">|1⟩ = South Pole (-Z Axis)</div>
+              <div className="font-bold text-[#808034]">|+⟩ = Superposition (+X Axis)</div>
+              <div className="font-bold text-[#723480]">|+i⟩ = Phase (+Y Axis)</div>
             </div>
           )}
         </div>
+
 
         {/* Right: Gate Selector & Math Readout */}
         <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
